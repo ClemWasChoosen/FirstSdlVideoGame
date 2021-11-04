@@ -5,11 +5,47 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
+{
+    if(0 != SDL_Init(SDL_INIT_VIDEO))
+    {
+        fprintf(stderr, "Erreur SDL_Init : %s", SDL_GetError());
+        return -1;
+    }
+    if(0 != SDL_CreateWindowAndRenderer(w, h, SDL_WINDOW_SHOWN, window, renderer))
+    {
+        fprintf(stderr, "Erreur SDL_CreateWindowAndRenderer : %s", SDL_GetError());
+        return -1;
+    }
+    return 0;
+}
 
-void mainLoop(){	
+SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
+{
+    SDL_Surface *tmp = NULL;
+    SDL_Texture *texture = NULL;
+    tmp = SDL_LoadBMP(path);
+    if(NULL == tmp)
+    {
+        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
+        return NULL;
+    }
+    texture = SDL_CreateTextureFromSurface(renderer, tmp);
+    SDL_FreeSurface(tmp);
+    if(NULL == texture)
+    {
+        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
+        return NULL;
+    }
+    return texture;
+}
+
+void mainLoop(SDL_Renderer* renderer){	
 	SDL_Event evenements; // Événements liés à la fenêtre
 	bool terminer = false;
-	// Boucle principale
+	SDL_Texture* map = NULL;
+
+	// Boucle principal
 	while(!terminer){
 		SDL_PollEvent( &evenements );
 		switch(evenements.type)
@@ -24,6 +60,14 @@ void mainLoop(){
 				terminer = true; break;
 			}
 		}
+		SDL_RenderClear(renderer);
+		map = loadImage("./resources/dungeon_tiles.bmp", renderer); 
+		if (map == NULL) {
+			SDL_DestroyTexture(map);
+			break;
+		}
+		SDL_RenderCopy(renderer, map, NULL, NULL);
+		SDL_RenderPresent(renderer);
 	}
 }
 
@@ -49,9 +93,10 @@ int main(int argc, char *argv[])
 
 	SDL_SetWindowTitle(fenetre, "Samourai vs Zombies");	
 
-	mainLoop();
+	mainLoop(renderer);
 
 	// Quitter SDL
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(fenetre);
 	SDL_Quit();
 	return 0;
