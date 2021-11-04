@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <stdio.h>
@@ -44,7 +45,11 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_Event evenements; // Événements liés à la fenêtre
 	bool terminer = false;
 	SDL_Texture* map = NULL;
+	SDL_Texture* fond = NULL;
+	int textuW, textuH;
 
+	SDL_Rect sizeMap;
+	SDL_Rect posEcran;
 	// Boucle principal
 	while(!terminer){
 		SDL_PollEvent( &evenements );
@@ -61,12 +66,32 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 		SDL_RenderClear(renderer);
+
 		map = loadImage("./resources/dungeon_tiles.bmp", renderer); 
 		if (map == NULL) {
+        	fprintf(stderr, "Erreur recuperation de l'image: %s", SDL_GetError());
 			SDL_DestroyTexture(map);
 			break;
 		}
-		SDL_RenderCopy(renderer, map, NULL, NULL);
+
+		SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
+
+		sizeMap.x = 0;
+		sizeMap.y = 0;
+		sizeMap.w = 150;
+		sizeMap.h = 150;
+
+		posEcran.x = 20;
+		posEcran.y = 50;
+		posEcran.w = 300;
+		posEcran.h = 300;
+	
+
+		if (SDL_RenderCopy(renderer, map, &sizeMap, NULL) != 0) {
+        	fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
+				
+		}
+		//SDL_RenderCopy(renderer, map, &sizeMap, NULL);
 		SDL_RenderPresent(renderer);
 	}
 }
