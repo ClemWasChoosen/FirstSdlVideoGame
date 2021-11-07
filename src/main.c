@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_error.h>
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
@@ -92,7 +93,7 @@ void mainLoop(SDL_Renderer* renderer){
 
 		SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
 
-		deplacerCarte(50, &carteJeu, evenements);
+		deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements);
 
 
 		for (int i = 0; i < NUMBER_TILES ;i++) {
@@ -103,7 +104,10 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
-//		deplacerCarte(10, &carteJeu.allSprite[1].posEcran, evenements);
+		if (SDL_RenderDrawPoint(renderer, WINDOW_HEIGHT / 2, WINDOW_WIDTH / 2) < 0) {
+			fprintf(stderr, "Erreur SDL_RenderDrawPoint : %s", SDL_GetError());
+			break;
+		}
 
 /*		if (renderMap(map, renderer, carteJeu.allSprite[1].posEcran, carteJeu.allSprite[1].posSprite)) {
         	fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
