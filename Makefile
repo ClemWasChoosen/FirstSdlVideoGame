@@ -4,12 +4,12 @@ LIBS = -L./SDL2_ttf/.libs
 LDFLAGS = `sdl2-config --cflags --libs` -lSDL2_ttf
 INCLUDES = -I./SDL2_ttf
 EXEC = main
-SRC = src/main.c 
+SRC = src/main.c src/map.c 
 OBJ = $(SRC:.c=.o)
 
 all: $(EXEC)
 main: $(OBJ)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS) $(LDFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS) $(LDFLAGS) -g -Og
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 clean:
