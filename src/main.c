@@ -29,26 +29,6 @@ int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
     return 0;
 }
 
-/*SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
-{
-    SDL_Surface *tmp = NULL;
-    SDL_Texture *texture = NULL;
-    tmp = SDL_LoadBMP(path);
-    if(NULL == tmp)
-    {
-        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
-        return NULL;
-    }
-    texture = SDL_CreateTextureFromSurface(renderer, tmp);
-    SDL_FreeSurface(tmp);
-    if(NULL == texture)
-    {
-        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
-        return NULL;
-    }
-    return texture;
-}
-*/
 void mainLoop(SDL_Renderer* renderer){	
 	SDL_Event evenements; // Événements liés à la fenêtre
 	bool terminer = false;
@@ -61,6 +41,7 @@ void mainLoop(SDL_Renderer* renderer){
 
 	carte_t carteJeu;
 	init_spriteMap(&carteJeu);
+	placerCarteCentre(&carteJeu);
 
 	//SDL_Rect sizeMap;
 	//SDL_Rect posEcran;

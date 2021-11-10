@@ -116,6 +116,16 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 	}
 }
 
+void placerCarteCentre(carte_t *carteJeu){
+	if (carteJeu != NULL) {
+		for (int i = 0; i < NUMBER_TILES; i++) {
+			carteJeu->allSprite[i].posEcran.x = ((carteJeu->allSprite[i].posEcran.x + WINDOW_WIDTH / 2) - ZOOM_SCREEN * SIZE_PIXEL / 2) ;	
+			carteJeu->allSprite[i].posEcran.y = ((carteJeu->allSprite[i].posEcran.y + WINDOW_HEIGHT / 2) - ZOOM_SCREEN * SIZE_PIXEL / 2);	
+		}	
+	}	
+}
+
+
 /*void init_spriteMap(sprite_t *ourMap, sprite_t *ourMap2){
 	getSpriteMap(1, &ourMap->posSprite);	
 

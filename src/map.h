@@ -44,4 +44,6 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 
 void init_spriteMap(carte_t *carteJeu);
 
+void placerCarteCentre(carte_t *carteJeu);
+
 #endif 
