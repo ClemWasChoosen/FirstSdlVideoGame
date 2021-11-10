@@ -95,7 +95,7 @@ void mainLoop(SDL_Renderer* renderer){
 			break;	
 		}*/
 
-		SDL_Delay(200);
+		SDL_Delay(20);
 
 		
 		//SDL_RenderCopy(renderer, map, &sizeMap, NULL);
@@ -109,6 +109,7 @@ void mainLoop(SDL_Renderer* renderer){
 		}*/
 	}
 	SDL_DestroyTexture(map);
+	free(carteJeu.allSprite);
 }
 
 int main(int argc, char *argv[])
