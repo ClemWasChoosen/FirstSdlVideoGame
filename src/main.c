@@ -43,6 +43,16 @@ void mainLoop(SDL_Renderer* renderer){
 	init_spriteMap(&carteJeu);
 	placerCarteCentre(&carteJeu);
 
+	int preOccurSlash = 0;
+
+	for (int r = 0; r < carteJeu.sizeMap; r++) {
+			if (carteJeu.allMap[r] == '/') {
+				preOccurSlash = r + 1;
+				break;	
+			}
+	}
+	fprintf(stderr, "%d", preOccurSlash);
+
 	//SDL_Rect sizeMap;
 	//SDL_Rect posEcran;
 	// Boucle principal
@@ -74,10 +84,10 @@ void mainLoop(SDL_Renderer* renderer){
 
 		SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
 
-		deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements);
+		deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements, preOccurSlash);
 
 
-		for (int i = 0; i < NUMBER_TILES ;i++) {
+		for (int i = 0; i < carteJeu.sizeMap;i++) {
 			
 			if (renderMap(map, renderer, carteJeu.allSprite[i].posEcran, carteJeu.allSprite[i].posSprite)) {
         		fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
@@ -95,11 +105,11 @@ void mainLoop(SDL_Renderer* renderer){
 			break;	
 		}*/
 
+		SDL_RenderPresent(renderer);
 		SDL_Delay(20);
 
 		
 		//SDL_RenderCopy(renderer, map, &sizeMap, NULL);
-		SDL_RenderPresent(renderer);
 
 /*		SDL_DisplayMode DispMode;
 		SDL_GetCurrentDisplayMode(0, &DispMode);
@@ -110,6 +120,7 @@ void mainLoop(SDL_Renderer* renderer){
 	}
 	SDL_DestroyTexture(map);
 	free(carteJeu.allSprite);
+	free(carteJeu.allMap);
 }
 
 int main(int argc, char *argv[])

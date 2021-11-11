@@ -14,7 +14,7 @@
 /**
  * \brief number of tiles in the map
  */
-#define NUMBER_TILES 3
+#define NUMBER_TILES 4
 
 /**
  * \brief Taille d'une tiles

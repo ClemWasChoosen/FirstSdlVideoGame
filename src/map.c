@@ -6,6 +6,8 @@
 #include <SDL2/SDL_render.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 
 
 /*int loadImage(const char path[], SDL_Renderer *renderer, SDL_Texture *texture){
@@ -56,135 +58,262 @@ int renderMap(SDL_Texture *map, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_R
 }
 
 
-void getSpriteMap(int value, SDL_Rect *sizeMap){
+void getSpriteMap(char value, SDL_Rect *sizeMap){
 	switch (value) {
-		case 1:
+
+		//Bordure haut  
+		case '1':
+		sizeMap->x = SIZE_PIXEL * 3;
+		sizeMap->y = SIZE_PIXEL * 2;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			break;
+
+		//Bordure gauche
+		case '2':
+		sizeMap->x = SIZE_PIXEL * 2;
+		sizeMap->y = SIZE_PIXEL * 3;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
+
+		//Bordure droite
+		case '3':
+		sizeMap->x = SIZE_PIXEL * 6;
+		sizeMap->y = SIZE_PIXEL * 3;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
+
+		//Interieur de la carte
+		case '4':
+		sizeMap->x = SIZE_PIXEL * 3;
+		sizeMap->y = SIZE_PIXEL * 3;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
+
+		//Coin en haut à gauche
+		case '5':
 		sizeMap->x = SIZE_PIXEL * 2;
 		sizeMap->y = SIZE_PIXEL * 2;
-		sizeMap->w = SIZE_PIXEL * 5;
-		sizeMap->h = SIZE_PIXEL * 6;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
 			break;
 
-		case 2:
-		sizeMap->x = SIZE_PIXEL * 7 + SIZE_PIXEL / 4;
+		//Coin en haut à droite
+		case '6':
+		sizeMap->x = SIZE_PIXEL * 6;
 		sizeMap->y = SIZE_PIXEL * 2;
-		sizeMap->w = SIZE_PIXEL * 3;
-		sizeMap->h = SIZE_PIXEL * 4;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
 			break;
 
-		case 16:
-		sizeMap->x = (SIZE_PIXEL * 8 + SIZE_PIXEL / 4) + SIZE_PIXEL / 2;
-		sizeMap->y = (SIZE_PIXEL * 8 + SIZE_PIXEL / 4);
-		sizeMap->h = SIZE_PIXEL; 
-		sizeMap->w = SIZE_PIXEL + SIZE_PIXEL / 4;
+		//Coin bas gauche
+		case '7':
+		sizeMap->x = SIZE_PIXEL * 2;
+		sizeMap->y = SIZE_PIXEL * 6;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
 			break;
+
+		//Coin bas droit
+		case '8':
+		sizeMap->x = SIZE_PIXEL * 6;
+		sizeMap->y = SIZE_PIXEL * 6;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
+
+		//Bordure bas
+		case '9':
+		sizeMap->x = SIZE_PIXEL * 3;
+		sizeMap->y = SIZE_PIXEL * 6;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
+
+		//Bordure hors map deco
+		case '=':
+		sizeMap->x = SIZE_PIXEL * 3;
+		sizeMap->y = SIZE_PIXEL * 7;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
+
 	}
 }
 
 
-void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements){
+void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash){
 	if (carteJeu != NULL) {
 		switch (evenements.type) {
 			case SDL_KEYDOWN:
 				switch (evenements.key.keysym.sym) {
-						case SDLK_d:
-							for (int i = 0; i < NUMBER_TILES; i++) {
-								carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x - deplacement;	
+						case SDLK_q:
+							if (carteJeu->allMap[carteJeu->posJoueur + 1] != '-' && carteJeu->allMap[carteJeu->posJoueur + 1] != '/' && carteJeu->allMap[carteJeu->posJoueur + 1] != '=' && carteJeu->posJoueur + 1 <= carteJeu->sizeMap) {
+								for (int i = 0; i < carteJeu->sizeMap; i++) {
+									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x + deplacement;	
+								}
+								carteJeu->posJoueur = carteJeu->posJoueur + 1;
 							}
 							break;
-						case SDLK_q:
-							for (int i = 0; i < NUMBER_TILES; i++) {
-								carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x + deplacement;	
+						case SDLK_d:
+							if (carteJeu->allMap[carteJeu->posJoueur - 1] != '-' && carteJeu->allMap[carteJeu->posJoueur - 1] != '=' && carteJeu->posJoueur - 1 >= 0) {
+								for (int i = 0; i < carteJeu->sizeMap; i++) {
+									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x - deplacement;	
+								}
+								carteJeu->posJoueur = carteJeu->posJoueur - 1;
 							}
 							break;
 
 
 						case SDLK_s:
-							for (int i = 0; i < NUMBER_TILES; i++) {
-								carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y - deplacement;	
+							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '=' && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '-' && carteJeu->posJoueur + preOccurSlash <= carteJeu->sizeMap) {
+								for (int i = 0; i < carteJeu->sizeMap; i++) {
+									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y - deplacement;	
+								}
+								carteJeu->posJoueur = carteJeu->posJoueur + preOccurSlash;
 							}
 							break;
 						case SDLK_z:
-							for (int i = 0; i < NUMBER_TILES; i++) {
-								carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;	
+							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->posJoueur - preOccurSlash >= 0) {
+								for (int i = 0; i < carteJeu->sizeMap; i++) {
+									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;	
+								}
+								carteJeu->posJoueur = carteJeu->posJoueur - preOccurSlash;
 							}
 							break;
 
 				}	
 				break;
+
 		}
+
+			//	fprintf(stderr, "%c", carteJeu->allMap[carteJeu->posJoueur]);
 	}
 }
 
 void placerCarteCentre(carte_t *carteJeu){
 	if (carteJeu != NULL) {
-		for (int i = 0; i < NUMBER_TILES; i++) {
+		for (int i = 0; i < carteJeu->sizeMap; i++) {
 			carteJeu->allSprite[i].posEcran.x = ((carteJeu->allSprite[i].posEcran.x + WINDOW_WIDTH / 2) - ZOOM_SCREEN * SIZE_PIXEL / 2) ;	
 			carteJeu->allSprite[i].posEcran.y = ((carteJeu->allSprite[i].posEcran.y + WINDOW_HEIGHT / 2) - ZOOM_SCREEN * SIZE_PIXEL / 2);	
 		}	
 	}	
 }
 
-
-/*void init_spriteMap(sprite_t *ourMap, sprite_t *ourMap2){
-	getSpriteMap(1, &ourMap->posSprite);	
-
-	ourMap->posEcran.x = 20;
-	ourMap->posEcran.y = 50;
-	ourMap->posEcran.w = 200;
-	ourMap->posEcran.h = 200;
-
-	getSpriteMap(2, &ourMap2->posSprite);
-
-	ourMap2->posEcran.x = 250;
-	ourMap2->posEcran.y = 260;
-	ourMap2->posEcran.w = 100;
-	ourMap2->posEcran.h = 100;
-
-
-}*/
-
 void init_spriteMap(carte_t *carteJeu){
 
 	int centerWindHeight = WINDOW_HEIGHT / 2;
 	int centerWindWidth = WINDOW_WIDTH / 2;
-	carteJeu->allSprite = malloc(NUMBER_TILES * sizeof(*carteJeu->allSprite)); 
-	getSpriteMap(1, &carteJeu->allSprite[0].posSprite);	
-
-	carteJeu->allSprite[0].posEcran.x = 0; 
-	carteJeu->allSprite[0].posEcran.y = 0; 
-			//centerWindWidth - (carteJeu->allSprite[0].posSprite.w / 2) * ZOOM_SCREEN;
-	carteJeu->allSprite[0].posEcran.w = carteJeu->allSprite[0].posSprite.w * ZOOM_SCREEN;
-	carteJeu->allSprite[0].posEcran.h = carteJeu->allSprite[0].posSprite.h * ZOOM_SCREEN;
-
-	getSpriteMap(16, &carteJeu->allSprite[1].posSprite);	
-
-	carteJeu->allSprite[1].posEcran.x = carteJeu->allSprite[0].posEcran.x - carteJeu->allSprite[1].posSprite.w * ZOOM_SCREEN + SIZE_PIXEL; 
-	carteJeu->allSprite[1].posEcran.y = carteJeu->allSprite[0].posEcran.y + SIZE_PIXEL * ZOOM_SCREEN;
-	carteJeu->allSprite[1].posEcran.w = carteJeu->allSprite[1].posSprite.w * ZOOM_SCREEN;
-	carteJeu->allSprite[1].posEcran.h = carteJeu->allSprite[1].posSprite.h * ZOOM_SCREEN;
+	const char tab[29] = "51116/"\
+					   	 "24443/"\
+						 "24443/"\
+						 "79998/"\
+						 "=====";
+	
 
 
-	getSpriteMap(2, &carteJeu->allSprite[2].posSprite);	
+	carteJeu->sizeMap =  sizeof(tab) / sizeof(tab[0]);
+	carteJeu->allSprite = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allSprite)); 
+	carteJeu->allMap = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allMap));
+	strncpy(carteJeu->allMap, tab, carteJeu->sizeMap);
+	carteJeu->posJoueur = 4;
 
-	carteJeu->allSprite[2].posEcran.x = carteJeu->allSprite[1].posEcran.x - carteJeu->allSprite[2].posSprite.w * ZOOM_SCREEN ; 
-	carteJeu->allSprite[2].posEcran.y = 0; 
-	carteJeu->allSprite[2].posEcran.w = carteJeu->allSprite[2].posSprite.w * ZOOM_SCREEN;
-	carteJeu->allSprite[2].posEcran.h = carteJeu->allSprite[2].posSprite.h * ZOOM_SCREEN;
+	int y = 0;
+	int x = 0;
+
+	fprintf(stderr, "%s", carteJeu->allMap);
+
+	for (int i = 0; i < carteJeu->sizeMap; i++) {
+		switch (carteJeu->allMap[i]) {
+			case '-':
+				x = x + SIZE_PIXEL * ZOOM_SCREEN;
+				break;
+
+			case '1':
+			getSpriteMap('1', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '2':
+			getSpriteMap('2', &carteJeu->allSprite[i].posSprite);
+			
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '3':
+			getSpriteMap('3', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);	
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '4':
+			getSpriteMap('4', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '5':
+			getSpriteMap('5', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '6':
+			getSpriteMap('6', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '7':
+			getSpriteMap('7', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '8':
+			getSpriteMap('8', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '9':
+			getSpriteMap('9', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+	
+			case '=':
+			getSpriteMap('=', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case '/':
+				y++;
+				x = 0;
+				break;	
+		}
+	}
+}
 
 
-
-/*	ourMap->posEcran.x = 20;
-	ourMap->posEcran.y = 50;
-	ourMap->posEcran.w = 200;
-	ourMap->posEcran.h = 200;
-
-	getSpriteMap(2, &ourMap2->posSprite);
-
-	ourMap2->posEcran.x = 250;
-	ourMap2->posEcran.y = 260;
-	ourMap2->posEcran.w = 100;
-	ourMap2->posEcran.h = 100;*/
-
-
+void setPosValue(int i, int x, int y, carte_t *carteJeu){
+	carteJeu->allSprite[i].posEcran.x = x; 
+	carteJeu->allSprite[i].posEcran.y = y * SIZE_PIXEL * ZOOM_SCREEN; 
+	carteJeu->allSprite[i].posEcran.w = SIZE_PIXEL * ZOOM_SCREEN;
+	carteJeu->allSprite[i].posEcran.h = SIZE_PIXEL * ZOOM_SCREEN;		
 }

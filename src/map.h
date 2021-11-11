@@ -10,7 +10,11 @@
 
 struct carte_s {
 	sprite_t* allSprite;
+	char* allMap;
+	int sizeMap;
+	int posJoueur;
 };
+
 
 typedef struct carte_s carte_t;
 
@@ -36,14 +40,16 @@ int renderMap(SDL_Texture* map, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_R
  * \param value numéro de la carte a ajouter
  * \param sizeMap retourne la position de la carte
  */
-void getSpriteMap(int value, SDL_Rect *sizeMap);
+void getSpriteMap(char value, SDL_Rect *sizeMap);
 
-void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements);
+void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash);
 
 //void init_spriteMap(sprite_t *ourMap, sprite_t *ourMap2);
 
 void init_spriteMap(carte_t *carteJeu);
 
 void placerCarteCentre(carte_t *carteJeu);
+
+void setPosValue(int i, int x, int y, carte_t *carteJeu);
 
 #endif 
