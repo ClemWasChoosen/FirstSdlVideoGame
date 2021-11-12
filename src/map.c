@@ -159,18 +159,18 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 		switch (evenements.type) {
 			case SDL_KEYDOWN:
 				switch (evenements.key.keysym.sym) {
-						case SDLK_q:
+						case SDLK_d:
 							if (carteJeu->allMap[carteJeu->posJoueur + 1] != '-' && carteJeu->allMap[carteJeu->posJoueur + 1] != '/' && carteJeu->allMap[carteJeu->posJoueur + 1] != '=' && carteJeu->posJoueur + 1 <= carteJeu->sizeMap) {
 								for (int i = 0; i < carteJeu->sizeMap; i++) {
-									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x + deplacement;	
+									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x - deplacement;	
 								}
 								carteJeu->posJoueur = carteJeu->posJoueur + 1;
 							}
 							break;
-						case SDLK_d:
-							if (carteJeu->allMap[carteJeu->posJoueur - 1] != '-' && carteJeu->allMap[carteJeu->posJoueur - 1] != '=' && carteJeu->posJoueur - 1 >= 0) {
+						case SDLK_q:
+							if (carteJeu->allMap[carteJeu->posJoueur - 1] != '-' && carteJeu->allMap[carteJeu->posJoueur - 1] != '=' && carteJeu->allMap[carteJeu->posJoueur - 1 ] != '/' && carteJeu->posJoueur - 1 >= 0) {
 								for (int i = 0; i < carteJeu->sizeMap; i++) {
-									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x - deplacement;	
+									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x + deplacement;	
 								}
 								carteJeu->posJoueur = carteJeu->posJoueur - 1;
 							}
@@ -199,12 +199,11 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 
 		}
 
-			//	fprintf(stderr, "%c", carteJeu->allMap[carteJeu->posJoueur]);
 	}
 }
 
 void placerCarteCentre(carte_t *carteJeu){
-	if (carteJeu != NULL) {
+	if (carteJeu->allSprite != NULL) {
 		for (int i = 0; i < carteJeu->sizeMap; i++) {
 			carteJeu->allSprite[i].posEcran.x = ((carteJeu->allSprite[i].posEcran.x + WINDOW_WIDTH / 2) - ZOOM_SCREEN * SIZE_PIXEL / 2) ;	
 			carteJeu->allSprite[i].posEcran.y = ((carteJeu->allSprite[i].posEcran.y + WINDOW_HEIGHT / 2) - ZOOM_SCREEN * SIZE_PIXEL / 2);	
@@ -216,11 +215,11 @@ void init_spriteMap(carte_t *carteJeu){
 
 	int centerWindHeight = WINDOW_HEIGHT / 2;
 	int centerWindWidth = WINDOW_WIDTH / 2;
-	const char tab[29] = "51116/"\
-					   	 "24443/"\
-						 "24443/"\
-						 "79998/"\
-						 "=====";
+	const char tab[39] = "--51116/"\
+					   	 "--24443/"\
+						 "--24443/"\
+						 "--79998/"\
+						 "--=====";
 	
 
 
@@ -228,12 +227,20 @@ void init_spriteMap(carte_t *carteJeu){
 	carteJeu->allSprite = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allSprite)); 
 	carteJeu->allMap = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allMap));
 	strncpy(carteJeu->allMap, tab, carteJeu->sizeMap);
-	carteJeu->posJoueur = 4;
+	carteJeu->posJoueur = 0;
+
+	for (int i = 0; i < carteJeu->sizeMap; i++) {
+		if (carteJeu->allMap[i] != '-' && carteJeu->allMap[i] != '/' && carteJeu->allMap[i] != '=') {
+			carteJeu->posJoueur = i;	
+			break;
+		}		
+	}
+	fprintf(stderr, "posJoueur : %d *", carteJeu->posJoueur);
 
 	int y = 0;
 	int x = 0;
 
-	fprintf(stderr, "%s", carteJeu->allMap);
+	//fprintf(stderr, "%s", carteJeu->allMap);
 
 	for (int i = 0; i < carteJeu->sizeMap; i++) {
 		switch (carteJeu->allMap[i]) {

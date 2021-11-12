@@ -51,7 +51,6 @@ void mainLoop(SDL_Renderer* renderer){
 				break;	
 			}
 	}
-	fprintf(stderr, "%d", preOccurSlash);
 
 	//SDL_Rect sizeMap;
 	//SDL_Rect posEcran;
