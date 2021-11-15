@@ -141,6 +141,15 @@ void getSpriteMap(char value, SDL_Rect *sizeMap){
 			
 			break;
 
+		//Bordure bas
+		case 'p':
+		sizeMap->x = SIZE_PIXEL * 9;
+		sizeMap->y = SIZE_PIXEL * 9;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
+
 		//Bordure hors map deco
 		case '=':
 		sizeMap->x = SIZE_PIXEL * 3;
@@ -215,10 +224,10 @@ void init_spriteMap(carte_t *carteJeu){
 
 	int centerWindHeight = WINDOW_HEIGHT / 2;
 	int centerWindWidth = WINDOW_WIDTH / 2;
-	const char tab[29] = "51116/"\
-					   	 "24443/"\
-						 "24443/"\
-						 "79998/"\
+	const char tab[33] = "51116-/"\
+					   	 "24443p/"\
+						 "24443-/"\
+						 "79998-/"\
 						 "=====";
 	
 
@@ -235,7 +244,6 @@ void init_spriteMap(carte_t *carteJeu){
 			break;
 		}		
 	}
-	fprintf(stderr, "posJoueur : %d *", carteJeu->posJoueur);
 
 	int y = 0;
 	int x = 0;
@@ -302,6 +310,13 @@ void init_spriteMap(carte_t *carteJeu){
 			setPosValue(i, x, y, carteJeu);
 			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
 				break;
+
+			case 'p':
+			getSpriteMap('p', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+	
 	
 			case '=':
 			getSpriteMap('=', &carteJeu->allSprite[i].posSprite);
