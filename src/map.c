@@ -215,11 +215,11 @@ void init_spriteMap(carte_t *carteJeu){
 
 	int centerWindHeight = WINDOW_HEIGHT / 2;
 	int centerWindWidth = WINDOW_WIDTH / 2;
-	const char tab[39] = "--51116/"\
-					   	 "--24443/"\
-						 "--24443/"\
-						 "--79998/"\
-						 "--=====";
+	const char tab[29] = "51116/"\
+					   	 "24443/"\
+						 "24443/"\
+						 "79998/"\
+						 "=====";
 	
 
 
