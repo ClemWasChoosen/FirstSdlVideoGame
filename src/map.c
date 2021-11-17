@@ -57,9 +57,26 @@ int renderMap(SDL_Texture *map, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_R
 	return EXIT_SUCCESS;
 }
 
+int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeMap){
+	if (SDL_RenderCopy(renderer, player, &sizeMap, &posEcran)) {
+		fprintf(stderr, "Erreur SDL_RenderCopy : %s\n", SDL_GetError());		
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
+}
+
 
 void getSpriteMap(char value, SDL_Rect *sizeMap){
 	switch (value) {
+
+		//Interieur + caillou
+		case '0':
+		sizeMap->x = SIZE_PIXEL * 5;
+		sizeMap->y = SIZE_PIXEL * 3;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			break;
+
 
 		//Bordure haut  
 		case '1':
@@ -141,10 +158,19 @@ void getSpriteMap(char value, SDL_Rect *sizeMap){
 			
 			break;
 
-		//Bordure bas
+		//Partie gauche du pont 
 		case 'p':
-		sizeMap->x = SIZE_PIXEL * 9;
-		sizeMap->y = SIZE_PIXEL * 9;
+		sizeMap->x = SIZE_PIXEL * 8 + 12;
+		sizeMap->y = SIZE_PIXEL * 8 + 4;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
+
+		//Partie gauche du pont 
+		case 'o':
+		sizeMap->x = SIZE_PIXEL * 8 + 16;
+		sizeMap->y = SIZE_PIXEL * 8 + 4;
 		sizeMap->w = SIZE_PIXEL;
 		sizeMap->h = SIZE_PIXEL;		
 			
@@ -187,7 +213,7 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 
 
 						case SDLK_s:
-							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '=' && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '-' && carteJeu->posJoueur + preOccurSlash <= carteJeu->sizeMap) {
+							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '=' && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '-' && carteJeu->posJoueur + preOccurSlash <= carteJeu->sizeMap && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '/') {
 								for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y - deplacement;	
 								}
@@ -195,7 +221,7 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 							}
 							break;
 						case SDLK_z:
-							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->posJoueur - preOccurSlash >= 0) {
+							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '/' && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->posJoueur - preOccurSlash >= 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '-') {
 								for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;	
 								}
@@ -209,6 +235,8 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 		}
 
 	}
+	
+		fprintf(stderr, "%c", carteJeu->allMap[carteJeu->posJoueur]);
 }
 
 void placerCarteCentre(carte_t *carteJeu){
@@ -220,22 +248,67 @@ void placerCarteCentre(carte_t *carteJeu){
 	}	
 }
 
-void init_spriteMap(carte_t *carteJeu){
 
-	int centerWindHeight = WINDOW_HEIGHT / 2;
-	int centerWindWidth = WINDOW_WIDTH / 2;
-	const char tab[33] = "51116-/"\
-					   	 "24443p/"\
-						 "24443-/"\
-						 "79998-/"\
-						 "=====";
+FILE* readFile(const char path[]){
+	FILE* fileToOpen = NULL;
+	fileToOpen = fopen(path, "r"); 
+	fprintf(stderr, "ICI ON PASSE\n");
+	return fileToOpen;
+}
+
+void fileInArray(FILE** fileToGet, carte_t* carteJeu){
+	if (fileToGet == NULL) {
+			fprintf(stderr, "le Fichier est null\n");			
+	}
+	//Permet de se placer à la fin du fichier et recuperer la taille
+	fseek(*fileToGet, 0L, SEEK_END);
+	carteJeu->sizeMap = ftell(*fileToGet);
+	fseek(*fileToGet, 0L, SEEK_SET);
+
+
+	carteJeu->allMap = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allMap));
+	fprintf(stderr, "taille fichier : %d\n", carteJeu->sizeMap);
+	/*
+	int c;
+	while((c = fgetc(*fileToGet)) != EOF) {
+			fprintf(stderr, "%c\n", c);
+	}
+*/
+	int c = 0;
+for (int i = 0; i < carteJeu->sizeMap; i++) {
+		c = fgetc(*fileToGet); 
+		if (c != ' ' && c != '\n') {	
+			carteJeu->allMap[i] = c; 
+		}
+		fprintf(stderr, "%c", carteJeu->allMap[i]);
+	}
+
+	fclose(*fileToGet);
+}
+
+void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
+
+//	int centerWindHeight = WINDOW_HEIGHT / 2;
+//	int centerWindWidth = WINDOW_WIDTH / 2;
+	const char tab[74] = "51116--5111116/"\
+					   	 "24043po2444443/"\
+						 "24403--7999998/"\
+						 "79998--=======/"\
+						 "=====---------";
 	
 
+	*fileToGet = readFile("./fichiersCarte/level1.txt");
 
-	carteJeu->sizeMap =  sizeof(tab) / sizeof(tab[0]);
+	if (fileToGet == NULL) {
+		fprintf(stderr, "Impossible d'ouvrir le fichier: erreur\n");
+		return;		
+	}
+
+	fileInArray(fileToGet, carteJeu);
+
 	carteJeu->allSprite = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allSprite)); 
-	carteJeu->allMap = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allMap));
-	strncpy(carteJeu->allMap, tab, carteJeu->sizeMap);
+//	strncpy(carteJeu->allMap, tab, carteJeu->sizeMap);
+
 	carteJeu->posJoueur = 0;
 
 	for (int i = 0; i < carteJeu->sizeMap; i++) {
@@ -255,6 +328,13 @@ void init_spriteMap(carte_t *carteJeu){
 			case '-':
 				x = x + SIZE_PIXEL * ZOOM_SCREEN;
 				break;
+
+			case '0':
+			getSpriteMap('0', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
 
 			case '1':
 			getSpriteMap('1', &carteJeu->allSprite[i].posSprite);
@@ -313,6 +393,12 @@ void init_spriteMap(carte_t *carteJeu){
 
 			case 'p':
 			getSpriteMap('p', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
+			case 'o':
+			getSpriteMap('o', &carteJeu->allSprite[i].posSprite);
 			setPosValue(i, x, y, carteJeu);
 			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
 				break;

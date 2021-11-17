@@ -29,22 +29,29 @@ int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
     return 0;
 }
 
+
 void mainLoop(SDL_Renderer* renderer){	
 	SDL_Event evenements; // Événements liés à la fenêtre
 	bool terminer = false;
 	SDL_Texture* map = NULL;
-	int textuW, textuH; 
-	//int intloop = 0;
-
-	//sprite_t ourMap;
-	//sprite_t ourMap2;
+	//int textuW, textuH; 
+	FILE* fileToRead = NULL;
 
 	carte_t carteJeu;
-	init_spriteMap(&carteJeu);
+	init_spriteMap(&carteJeu, &fileToRead);
+
+	if (fileToRead == NULL) {
+		SDL_DestroyTexture(map);
+		free(carteJeu.allSprite);
+		free(carteJeu.allMap);
+		fprintf(stderr, "On sort de la boucle ici\n");
+		return;
+	}
+
 	placerCarteCentre(&carteJeu);
 
+	//Utilisé pour aller de haut en bas dans le tableau
 	int preOccurSlash = 0;
-
 	for (int r = 0; r < carteJeu.sizeMap; r++) {
 			if (carteJeu.allMap[r] == '/') {
 				preOccurSlash = r + 1;
@@ -52,8 +59,6 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 	}
 
-	//SDL_Rect sizeMap;
-	//SDL_Rect posEcran;
 	// Boucle principal
 	while(!terminer){
 		SDL_PollEvent( &evenements );
@@ -81,7 +86,7 @@ void mainLoop(SDL_Renderer* renderer){
 		}
 
 
-		SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
+		//SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
 
 		deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements, preOccurSlash);
 
@@ -99,24 +104,12 @@ void mainLoop(SDL_Renderer* renderer){
 			break;
 		}
 
-/*		if (renderMap(map, renderer, carteJeu.allSprite[1].posEcran, carteJeu.allSprite[1].posSprite)) {
-        	fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
-			break;	
-		}*/
-
 		SDL_RenderPresent(renderer);
 		SDL_Delay(20);
 
 		
-		//SDL_RenderCopy(renderer, map, &sizeMap, NULL);
+			}
 
-/*		SDL_DisplayMode DispMode;
-		SDL_GetCurrentDisplayMode(0, &DispMode);
-
-		if (DispMode.w >= intloop) {
-			intloop = intloop + 10;
-		}*/
-	}
 	SDL_DestroyTexture(map);
 	free(carteJeu.allSprite);
 	free(carteJeu.allMap);
@@ -132,10 +125,8 @@ int main(int argc, char *argv[])
 		SDL_Quit();
 		return EXIT_FAILURE;
 	}
+
 	// Créer la fenêtre
-//	fenetre = SDL_CreateWindow("Samourai vs Zombies", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 600, SDL_WINDOW_RESIZABLE);
-//	SDL_CreateWindowAndRenderer(600, 600, SDL_WINDOWPOS_CENTERED, &fenetre, &renderer);
-	
 	if (SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &fenetre, &renderer)) {	
 		printf("Erreur de la creation d’une fenetre et du renderer: %s",SDL_GetError());
 		SDL_Quit();
@@ -144,6 +135,7 @@ int main(int argc, char *argv[])
 
 	SDL_SetWindowTitle(fenetre, "Samourai vs Zombies");	
 
+	//Boucle du jeu créée dans une fonction
 	mainLoop(renderer);
 
 	// Quitter SDL

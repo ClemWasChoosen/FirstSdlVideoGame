@@ -35,6 +35,7 @@ typedef struct carte_s carte_t;
 int renderMap(SDL_Texture* map, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeMap);
 
 
+int renderPlayer(SDL_Texture* map, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeMap);
 /*
  * \brief Permet de retourner la position d'une partie de la carte
  * \param value numéro de la carte a ajouter
@@ -46,7 +47,7 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 
 //void init_spriteMap(sprite_t *ourMap, sprite_t *ourMap2);
 
-void init_spriteMap(carte_t *carteJeu);
+void init_spriteMap(carte_t *carteJeu, FILE** fileToGet);
 
 void placerCarteCentre(carte_t *carteJeu);
 
