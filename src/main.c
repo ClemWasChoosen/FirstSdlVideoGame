@@ -34,7 +34,6 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_Event evenements; // Événements liés à la fenêtre
 	bool terminer = false;
 	SDL_Texture* map = NULL;
-	//int textuW, textuH; 
 	FILE* fileToRead = NULL;
 
 	carte_t carteJeu;
@@ -59,7 +58,7 @@ void mainLoop(SDL_Renderer* renderer){
 	}
 
 
-	// Boucle principal
+	// Boucle principale
 	while(!terminer){
 		SDL_PollEvent( &evenements );
 		switch(evenements.type)
@@ -75,30 +74,32 @@ void mainLoop(SDL_Renderer* renderer){
 		}
 		SDL_RenderClear(renderer);
 
+		//Récuperation de l'image permettant de faire la carte
 		map = loadImage("./resources/dungeon_tiles.bmp", renderer);
-
-		//mapToRender = loadImage("./resources/neonbrand-OjxsirfohHU-unsplash.bmp", renderer);
-
 		if (map == NULL) {
         	fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
 			SDL_DestroyTexture(map);
 			break;
 		}
 
+		//mapToRender = loadImage("./resources/neonbrand-OjxsirfohHU-unsplash.bmp", renderer);
 
 		//SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
 
+		//Récupère les clicks du joueur
 		deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements, preOccurSlash);
 
 
+		//Rendu de tous les sprites sur la carte
 		for (int i = 0; i < carteJeu.sizeMap;i++) {
-			
 			if (renderMap(map, renderer, carteJeu.allSprite[i].posEcran, carteJeu.allSprite[i].posSprite)) {
         		fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
 				break;	
 			}
 		}
 
+		//######### Pour debug ###########
+		//Affiche un point au centre de l'écran
 		if (SDL_RenderDrawPoint(renderer, WINDOW_HEIGHT / 2, WINDOW_WIDTH / 2) < 0) {
 			fprintf(stderr, "Erreur SDL_RenderDrawPoint : %s", SDL_GetError());
 			break;
@@ -106,10 +107,11 @@ void mainLoop(SDL_Renderer* renderer){
 
 		SDL_RenderPresent(renderer);
 		SDL_Delay(20);
-
 		
-			}
+	//Fin de la boucle 
+	}
 
+	//Libère la mémoire 
 	SDL_DestroyTexture(map);
 	free(carteJeu.allSprite);
 	free(carteJeu.allMap);

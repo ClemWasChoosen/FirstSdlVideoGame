@@ -236,7 +236,6 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 
 	}
 	
-//		fprintf(stderr, "%c", carteJeu->allMap[carteJeu->posJoueur]);
 }
 
 void placerCarteCentre(carte_t *carteJeu){
@@ -252,37 +251,33 @@ void placerCarteCentre(carte_t *carteJeu){
 FILE* readFile(const char path[]){
 	FILE* fileToOpen = NULL;
 	fileToOpen = fopen(path, "r"); 
-	//fprintf(stderr, "ICI ON PASSE\n");
 	return fileToOpen;
 }
 
 void fileInArray(FILE** fileToGet, carte_t* carteJeu){
+	//On ne fait rien si le fichier est null
 	if (fileToGet == NULL) {
 			fprintf(stderr, "le Fichier est null\n");			
 			return;
 	}
-	//Permet de se placer à la fin du fichier et recuperer la taille
-/*	fseek(*fileToGet, 0L, SEEK_END);
-	carteJeu->sizeMap = ftell(*fileToGet);
-	fseek(*fileToGet, 0L, SEEK_SET);
-*/
 
 	fseek(*fileToGet, 0L, SEEK_SET);
 
+	//Initialisation de la taille de la carte en parcourant le fichier 
+	//(retour à la ligne et espace non ajouté)
 	int c;
 	while((c = fgetc(*fileToGet)) != EOF) {
 		if (c != ' ' && c != '\n') {
 			carteJeu->sizeMap += 1;
-	//		fprintf(stderr, "%c", c);
 		}
 	}
 
+	//Curseur au début du fichier
 	fseek(*fileToGet, 0L, SEEK_SET);
 
 	carteJeu->allMap = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allMap));
 
-	//fprintf(stderr, "\n\n TailleJeu : %d\n\n", carteJeu->sizeMap);
-	
+	//Ajout des caractères du fichier dans allMap après allocation mémoire 
 	int i = 0;
 	while((c = fgetc(*fileToGet)) != EOF) {
 		if (c != ' ' && c != '\n') {
@@ -291,28 +286,10 @@ void fileInArray(FILE** fileToGet, carte_t* carteJeu){
 		}
 	}
 
-	//int c = 0;
-/*for (int i = 0; i < carteJeu->sizeMap; i++) {
-		c = fgetc(*fileToGet); 
-		if (c != ' ' && c != '\n') {	
-			carteJeu->allMap[i] = c; 
-		}
-	//	fprintf(stderr, "ajoute : %c, dans le tableau: %c\n", c, carteJeu->allMap[i]);
-	}
-*/
 	fclose(*fileToGet);
 }
 
 void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
-
-//	int centerWindHeight = WINDOW_HEIGHT / 2;
-//	int centerWindWidth = WINDOW_WIDTH / 2;
-/*	const char tab[74] = "51116--5111116/"\
-					   	 "24043po2444443/"\
-						 "24403--7999998/"\
-						 "79998--=======/"\
-						 "=====---------";
-*/
 
 	//Initialisation de la map
 	carteJeu->sizeMap = 0;
@@ -324,13 +301,13 @@ void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
 		return;		
 	}
 
+	//Récuperation du fichier
 	fileInArray(fileToGet, carteJeu);
 
 	carteJeu->allSprite = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allSprite)); 
-//	strncpy(carteJeu->allMap, tab, carteJeu->sizeMap);
 
+	//Initialisation de la position du joueur (la première case possible tout en haut à gauche) 
 	carteJeu->posJoueur = 0;
-
 	for (int i = 0; i < carteJeu->sizeMap; i++) {
 		if (carteJeu->allMap[i] != '-' && carteJeu->allMap[i] != '/' && carteJeu->allMap[i] != '=') {
 			carteJeu->posJoueur = i;	
@@ -338,11 +315,9 @@ void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
 		}		
 	}
 
+	//Initialisation des placements et du contenu (en fct du bmp de la carte) de chaque tiles 
 	int y = 0;
 	int x = 0;
-
-	//fprintf(stderr, "%s", carteJeu->allMap);
-
 	for (int i = 0; i < carteJeu->sizeMap; i++) {
 		switch (carteJeu->allMap[i]) {
 			case '-':

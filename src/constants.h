@@ -12,15 +12,13 @@
 #define WINDOW_WIDTH 800 
 
 /**
- * \brief number of tiles in the map
- */
-#define NUMBER_TILES 4
-
-/**
- * \brief Taille d'une tiles
+ * \brief Taille d'une tiles en pixel
  */
 #define SIZE_PIXEL 16
 
+/**
+ * Zoom pour agrandir la carte sur l'écran
+ */
 #define ZOOM_SCREEN 4
 
 #endif /* ifndef CONSTANTS_H */
