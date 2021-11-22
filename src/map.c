@@ -236,7 +236,7 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 
 	}
 	
-		fprintf(stderr, "%c", carteJeu->allMap[carteJeu->posJoueur]);
+//		fprintf(stderr, "%c", carteJeu->allMap[carteJeu->posJoueur]);
 }
 
 void placerCarteCentre(carte_t *carteJeu){
@@ -252,37 +252,54 @@ void placerCarteCentre(carte_t *carteJeu){
 FILE* readFile(const char path[]){
 	FILE* fileToOpen = NULL;
 	fileToOpen = fopen(path, "r"); 
-	fprintf(stderr, "ICI ON PASSE\n");
+	//fprintf(stderr, "ICI ON PASSE\n");
 	return fileToOpen;
 }
 
 void fileInArray(FILE** fileToGet, carte_t* carteJeu){
 	if (fileToGet == NULL) {
 			fprintf(stderr, "le Fichier est null\n");			
+			return;
 	}
 	//Permet de se placer à la fin du fichier et recuperer la taille
-	fseek(*fileToGet, 0L, SEEK_END);
+/*	fseek(*fileToGet, 0L, SEEK_END);
 	carteJeu->sizeMap = ftell(*fileToGet);
 	fseek(*fileToGet, 0L, SEEK_SET);
+*/
 
+	fseek(*fileToGet, 0L, SEEK_SET);
 
-	carteJeu->allMap = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allMap));
-	fprintf(stderr, "taille fichier : %d\n", carteJeu->sizeMap);
-	/*
 	int c;
 	while((c = fgetc(*fileToGet)) != EOF) {
-			fprintf(stderr, "%c\n", c);
+		if (c != ' ' && c != '\n') {
+			carteJeu->sizeMap += 1;
+	//		fprintf(stderr, "%c", c);
+		}
 	}
-*/
-	int c = 0;
-for (int i = 0; i < carteJeu->sizeMap; i++) {
+
+	fseek(*fileToGet, 0L, SEEK_SET);
+
+	carteJeu->allMap = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allMap));
+
+	//fprintf(stderr, "\n\n TailleJeu : %d\n\n", carteJeu->sizeMap);
+	
+	int i = 0;
+	while((c = fgetc(*fileToGet)) != EOF) {
+		if (c != ' ' && c != '\n') {
+			carteJeu->allMap[i] = c; 
+			i++;
+		}
+	}
+
+	//int c = 0;
+/*for (int i = 0; i < carteJeu->sizeMap; i++) {
 		c = fgetc(*fileToGet); 
 		if (c != ' ' && c != '\n') {	
 			carteJeu->allMap[i] = c; 
 		}
-		fprintf(stderr, "%c", carteJeu->allMap[i]);
+	//	fprintf(stderr, "ajoute : %c, dans le tableau: %c\n", c, carteJeu->allMap[i]);
 	}
-
+*/
 	fclose(*fileToGet);
 }
 
@@ -290,13 +307,16 @@ void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
 
 //	int centerWindHeight = WINDOW_HEIGHT / 2;
 //	int centerWindWidth = WINDOW_WIDTH / 2;
-	const char tab[74] = "51116--5111116/"\
+/*	const char tab[74] = "51116--5111116/"\
 					   	 "24043po2444443/"\
 						 "24403--7999998/"\
 						 "79998--=======/"\
 						 "=====---------";
-	
+*/
 
+	//Initialisation de la map
+	carteJeu->sizeMap = 0;
+	
 	*fileToGet = readFile("./fichiersCarte/level1.txt");
 
 	if (fileToGet == NULL) {

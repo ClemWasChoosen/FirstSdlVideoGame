@@ -44,7 +44,6 @@ void mainLoop(SDL_Renderer* renderer){
 		SDL_DestroyTexture(map);
 		free(carteJeu.allSprite);
 		free(carteJeu.allMap);
-		fprintf(stderr, "On sort de la boucle ici\n");
 		return;
 	}
 
@@ -58,6 +57,7 @@ void mainLoop(SDL_Renderer* renderer){
 				break;	
 			}
 	}
+
 
 	// Boucle principal
 	while(!terminer){
