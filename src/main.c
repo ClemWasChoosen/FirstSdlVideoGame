@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "character.h"
 #include "map.h"
 #include "sprite.h"
 #include "constants.h"
@@ -34,11 +35,14 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_Event evenements; // Événements liés à la fenêtre
 	bool terminer = false;
 	SDL_Texture* map = NULL;
+	SDL_Texture* player = NULL;
 	FILE* fileToRead = NULL;
 
 	carte_t carteJeu;
+	character_t mainCharactere;
 	init_spriteMap(&carteJeu, &fileToRead);
-
+	init_spritePlayer(&mainCharactere);
+	
 	if (fileToRead == NULL) {
 		SDL_DestroyTexture(map);
 		free(carteJeu.allSprite);
@@ -81,6 +85,13 @@ void mainLoop(SDL_Renderer* renderer){
 			SDL_DestroyTexture(map);
 			break;
 		}
+		//Récuperation de l'image permettant de faire la carte
+		player = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
+		if (player == NULL) {
+        	fprintf(stderr, "Erreur recuperation du Joueur principal: %s", SDL_GetError());
+			SDL_DestroyTexture(player);
+			break;
+		}
 
 		//mapToRender = loadImage("./resources/neonbrand-OjxsirfohHU-unsplash.bmp", renderer);
 
@@ -98,6 +109,11 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
+		if (renderPlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite)) {
+			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
+			break;
+		}
+
 		//######### Pour debug ###########
 		//Affiche un point au centre de l'écran
 		if (SDL_RenderDrawPoint(renderer, WINDOW_HEIGHT / 2, WINDOW_WIDTH / 2) < 0) {
@@ -113,6 +129,7 @@ void mainLoop(SDL_Renderer* renderer){
 
 	//Libère la mémoire 
 	SDL_DestroyTexture(map);
+	SDL_DestroyTexture(player);
 	free(carteJeu.allSprite);
 	free(carteJeu.allMap);
 }

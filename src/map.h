@@ -20,13 +20,6 @@ struct carte_s {
 
 typedef struct carte_s carte_t;
 
-/**
- * \brief Permet d'inititaliser + charger une image
- * \param path[] chemin courant de la ressource
- * \param renderer rendu à afficher 
- */
- SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
-
  /*
   * \brief Permet d'ajouter la map au rendu 
   * \param map texture de la carte a ajouter au rendu
@@ -35,14 +28,6 @@ typedef struct carte_s carte_t;
   * \param sizeMap taille de la partie de la carte a ajouter
   */
 int renderMap(SDL_Texture* map, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeMap);
-
-//!!!!!!!!!! A deplacer !!!!!!!!!!!!
-/*
- * \brief Permet de retourner la position d'une partie de la carte
- * \param value numéro de la carte a ajouter
- * \param sizeMap retourne la position de la carte
- */
-int renderPlayer(SDL_Texture* map, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeMap);
 
 /*
  * \brief Permet de retourner la position d'une partie de la carte

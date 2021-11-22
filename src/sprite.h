@@ -15,4 +15,12 @@ struct sprite_s {
 
 typedef struct sprite_s sprite_t;
 
+/**
+ * \brief Permet d'inititaliser + charger une image
+ * \param path[] chemin courant de la ressource
+ * \param renderer rendu à afficher 
+ */
+SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer);
+
+
 #endif

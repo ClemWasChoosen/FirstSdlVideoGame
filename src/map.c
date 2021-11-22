@@ -29,43 +29,6 @@
 }*/
 
 
-SDL_Texture *loadImage(const char path[], SDL_Renderer *renderer)
-{
-    SDL_Surface *tmp = NULL;
-    SDL_Texture *texture = NULL;
-    tmp = SDL_LoadBMP(path);
-    if(tmp == NULL)
-    {
-        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
-        return NULL;
-    }
-    texture = SDL_CreateTextureFromSurface(renderer, tmp);
-    SDL_FreeSurface(tmp);
-    if(texture == NULL)
-    {
-        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
-        return NULL;
-    }
-    return texture;
-}
-
-int renderMap(SDL_Texture *map, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeMap){
-	if (SDL_RenderCopy(renderer, map, &sizeMap, &posEcran)) {
-		fprintf(stderr, "Erreur SDL_RenderCopy : %s\n", SDL_GetError());		
-		return EXIT_FAILURE;
-	}
-	return EXIT_SUCCESS;
-}
-
-int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeMap){
-	if (SDL_RenderCopy(renderer, player, &sizeMap, &posEcran)) {
-		fprintf(stderr, "Erreur SDL_RenderCopy : %s\n", SDL_GetError());		
-		return EXIT_FAILURE;
-	}
-	return EXIT_SUCCESS;
-}
-
-
 void getSpriteMap(char value, SDL_Rect *sizeMap){
 	switch (value) {
 
@@ -176,6 +139,14 @@ void getSpriteMap(char value, SDL_Rect *sizeMap){
 			
 			break;
 
+		//Sol avec bordure Haut et bordure Bas
+		case 'f':
+		sizeMap->x = SIZE_PIXEL * 8 + 4;
+		sizeMap->y = SIZE_PIXEL * 2;
+		sizeMap->w = SIZE_PIXEL;
+		sizeMap->h = SIZE_PIXEL;		
+			
+			break;
 		//Bordure hors map deco
 		case '=':
 		sizeMap->x = SIZE_PIXEL * 3;
@@ -399,6 +370,12 @@ void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
 				break;
 	
 	
+			case 'f':
+			getSpriteMap('f', &carteJeu->allSprite[i].posSprite);
+			setPosValue(i, x, y, carteJeu);
+			x = x + SIZE_PIXEL * ZOOM_SCREEN;	
+				break;
+
 			case '=':
 			getSpriteMap('=', &carteJeu->allSprite[i].posSprite);
 			setPosValue(i, x, y, carteJeu);
