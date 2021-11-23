@@ -24,5 +24,6 @@ int renderPlayer(SDL_Texture* player, SDL_Renderer *renderer, SDL_Rect posEcran,
  */
 void init_spritePlayer(character_t *mainCharactere);
 
+int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *i, int *state);
 
 #endif /* ifndef character_h */

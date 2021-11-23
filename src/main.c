@@ -37,6 +37,10 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_Texture* map = NULL;
 	SDL_Texture* player = NULL;
 	FILE* fileToRead = NULL;
+	int comptTour = 0;
+
+	//A deplacer
+	int statePlayer = 0;
 
 	carte_t carteJeu;
 	character_t mainCharactere;
@@ -109,7 +113,7 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
-		if (renderPlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite)) {
+		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &comptTour, &statePlayer)) {
 			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 			break;
 		}
@@ -123,6 +127,7 @@ void mainLoop(SDL_Renderer* renderer){
 
 		SDL_RenderPresent(renderer);
 		SDL_Delay(20);
+		comptTour ++;
 		
 	//Fin de la boucle 
 	}
