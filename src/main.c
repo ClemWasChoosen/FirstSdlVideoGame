@@ -42,7 +42,7 @@ void mainLoop(SDL_Renderer* renderer){
 	float frameTime = 0;
 	int prevTime = 0;
 	int currentTime = 0;
-	float deltaTime;
+	int deltaTime = 0;
 
 	//A deplacer
 	//int statePlayer = 0;
@@ -74,7 +74,7 @@ void mainLoop(SDL_Renderer* renderer){
 	// Boucle principale
 	while(!terminer){
 
-		Uint32 start_time, tempsBoucle;
+		Uint32 start_time, tempsBoucle = 0;
 		float fps;
 
   		start_time = SDL_GetTicks();
@@ -137,7 +137,7 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
-		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &comptTour, &mainCharactere.state)) {
+		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere.state)) {
 			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 			break;
 		}
@@ -159,9 +159,13 @@ void mainLoop(SDL_Renderer* renderer){
 		//SDL_Flip();
 
   		tempsBoucle = SDL_GetTicks()-start_time;
-		deltaTime += tempsBoucle / 1000.0f;
+
+		deltaTime += tempsBoucle;
+		
+
+		fprintf(stderr, "deltaTime %i\n", deltaTime);					
   		fps = (tempsBoucle > 0) ? 1000.0f / tempsBoucle : 0.0f;
-		fprintf(stderr, " %d ", fps);
+		//fprintf(stderr, " %d ", fps);
 		
 	//Fin de la boucle 
 	}

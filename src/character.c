@@ -15,10 +15,25 @@ int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran,
 	return EXIT_SUCCESS;
 }
 
-int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *i, int *statePlayer){
+int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, int *statePlayer){
 	//fprintf(stderr, "%d ", *statePlayer);
+	//250ms = toutes les 1/4 secondes
+	sizePlayer.x += 64 * (*statePlayer);
+	sizePlayer.y = SIZE_PIXEL * 1.7;
+	if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+		return EXIT_FAILURE;		
+
+
+	if (*deltaTime%250 == 0) {	
+		*statePlayer = *statePlayer + 1;
+		if (*statePlayer >= 4) {
+			*statePlayer = 0;			
+		}
+		*deltaTime = 0;
+	//	fprintf(stderr, "Retour à 0 en 250ms\n");					
+	}
 	
-	switch (*statePlayer) {
+/*	switch (*statePlayer) {
 		case 0:
 		case 1:
 		case 2:
@@ -63,6 +78,8 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 		*statePlayer = 0;	
 			break;
 	}
+
+	*/
 	/*if (*statePlayer <= 5) {
 		
 		sizePlayer.x += 64 * (*statePlayer);
