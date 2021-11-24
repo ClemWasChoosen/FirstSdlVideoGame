@@ -40,7 +40,7 @@ void mainLoop(SDL_Renderer* renderer){
 	int comptTour = 0;
 
 	//A deplacer
-	int statePlayer = 0;
+	//int statePlayer = 0;
 
 	carte_t carteJeu;
 	character_t mainCharactere;
@@ -102,7 +102,7 @@ void mainLoop(SDL_Renderer* renderer){
 		//SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
 
 		//Récupère les clicks du joueur
-		deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements, preOccurSlash);
+		deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements, preOccurSlash, &comptTour, &mainCharactere);
 
 
 		//Rendu de tous les sprites sur la carte
@@ -113,7 +113,7 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
-		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &comptTour, &statePlayer)) {
+		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &comptTour, &mainCharactere.state)) {
 			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 			break;
 		}

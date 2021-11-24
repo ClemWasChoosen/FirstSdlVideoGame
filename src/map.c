@@ -1,4 +1,5 @@
 #include "map.h"
+#include "character.h"
 #include "sprite.h"
 #include "constants.h"
 #include <SDL2/SDL_events.h>
@@ -160,7 +161,7 @@ void getSpriteMap(char value, SDL_Rect *sizeMap){
 }
 
 
-void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash){
+void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash, int *tourJeu, character_t *mainCharactere){
 	if (carteJeu != NULL) {
 		switch (evenements.type) {
 			case SDL_KEYDOWN:
@@ -171,6 +172,7 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x - deplacement;	
 								}
 								carteJeu->posJoueur = carteJeu->posJoueur + 1;
+								mainCharactere->state = 10;									
 							}
 							break;
 						case SDLK_q:
@@ -178,6 +180,7 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 								for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x + deplacement;	
 								}
+								mainCharactere->state = 10;									
 								carteJeu->posJoueur = carteJeu->posJoueur - 1;
 							}
 							break;
@@ -189,6 +192,7 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y - deplacement;	
 								}
 								carteJeu->posJoueur = carteJeu->posJoueur + preOccurSlash;
+								mainCharactere->state = 10;									
 							}
 							break;
 						case SDLK_z:
@@ -197,6 +201,8 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;	
 								}
 								carteJeu->posJoueur = carteJeu->posJoueur - preOccurSlash;
+								mainCharactere->state = 10;									
+								
 							}
 							break;
 

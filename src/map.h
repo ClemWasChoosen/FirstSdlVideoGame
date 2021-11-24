@@ -8,6 +8,7 @@
 #include <bits/types/FILE.h>
 #include <stdio.h>
 
+#include "character.h"
 #include "sprite.h"
 
 struct carte_s {
@@ -43,7 +44,7 @@ void getSpriteMap(char value, SDL_Rect *sizeMap);
  * \param evenements Variable contenant les touches qu'a enfoncé le joueur 
  * \preOccurSlash Premiere occurence de Slash dans le tableau pour aller de haut en bas
  */
-void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash);
+void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash, int *tourJeu, character_t *mainCharactere);
 
 /*
  * \brief Fonction d'initialisation de la carte de Jeu

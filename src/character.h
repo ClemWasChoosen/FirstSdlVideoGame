@@ -5,6 +5,7 @@
 
 struct character_s {
 	sprite_t charac;
+	int state;
 };
 
 typedef struct character_s character_t;
