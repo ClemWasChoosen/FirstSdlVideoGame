@@ -16,7 +16,7 @@ int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran,
 }
 
 int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *i, int *statePlayer){
-	fprintf(stderr, "%d ", *statePlayer);
+	//fprintf(stderr, "%d ", *statePlayer);
 	
 	switch (*statePlayer) {
 		case 0:
@@ -48,7 +48,7 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 		//case 15:
 
 			sizePlayer.x += 64 * (*statePlayer%10);
-			sizePlayer.y += 64;
+			sizePlayer.y = SIZE_PIXEL * 1.7 + 64;
 	
 			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
 				return EXIT_FAILURE;		

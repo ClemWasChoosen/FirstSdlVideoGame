@@ -39,6 +39,11 @@ void mainLoop(SDL_Renderer* renderer){
 	FILE* fileToRead = NULL;
 	int comptTour = 0;
 
+	float frameTime = 0;
+	int prevTime = 0;
+	int currentTime = 0;
+	float deltaTime;
+
 	//A deplacer
 	//int statePlayer = 0;
 
@@ -68,6 +73,17 @@ void mainLoop(SDL_Renderer* renderer){
 
 	// Boucle principale
 	while(!terminer){
+
+		Uint32 start_time, tempsBoucle;
+		float fps;
+
+  		start_time = SDL_GetTicks();
+		
+  		
+		/*prevTime = currentTime;
+		currentTime = SDL_GetTicks();
+		deltaTime = (currentTime - prevTime) / 1000.0f;*/
+
 		SDL_PollEvent( &evenements );
 		switch(evenements.type)
 		{
@@ -78,8 +94,16 @@ void mainLoop(SDL_Renderer* renderer){
 			{
 				case SDLK_ESCAPE:
 					terminer = true; break;
+				case SDLK_n:
+					for (int i = 0; i < carteJeu.sizeMap; i++) {
+						carteJeu.allSprite[i].posEcran.x += 200.0f * deltaTime;	
+					}
+				break;
 			}
 		}
+		
+		frameTime += deltaTime;
+		
 		SDL_RenderClear(renderer);
 
 		//Récuperation de l'image permettant de faire la carte
@@ -102,13 +126,13 @@ void mainLoop(SDL_Renderer* renderer){
 		//SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
 
 		//Récupère les clicks du joueur
-		deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements, preOccurSlash, &comptTour, &mainCharactere);
+		//deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements, preOccurSlash, &comptTour, &mainCharactere);
 
 
 		//Rendu de tous les sprites sur la carte
 		for (int i = 0; i < carteJeu.sizeMap;i++) {
 			if (renderMap(map, renderer, carteJeu.allSprite[i].posEcran, carteJeu.allSprite[i].posSprite)) {
-        		fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
+        		fprintf(stderr, "Erreur SDL_Crstart_timeeateTextureFromSurface : %s", SDL_GetError());
 				break;	
 			}
 		}
@@ -128,6 +152,16 @@ void mainLoop(SDL_Renderer* renderer){
 		SDL_RenderPresent(renderer);
 		SDL_Delay(20);
 		comptTour ++;
+
+		//fprintf(stderr, " %f + delta : %f", frameTime, deltaTime);
+
+
+		//SDL_Flip();
+
+  		tempsBoucle = SDL_GetTicks()-start_time;
+		deltaTime += tempsBoucle / 1000.0f;
+  		fps = (tempsBoucle > 0) ? 1000.0f / tempsBoucle : 0.0f;
+		fprintf(stderr, " %d ", fps);
 		
 	//Fin de la boucle 
 	}
