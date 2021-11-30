@@ -1,5 +1,3 @@
-#include "map.h"
-#include "character.h"
 #include "sprite.h"
 #include "constants.h"
 #include <SDL2/SDL_events.h>
@@ -8,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "character.h"
+#include "map.h"
 
 
 
@@ -168,40 +168,52 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 				switch (evenements.key.keysym.sym) {
 						case SDLK_d:
 							if (carteJeu->allMap[carteJeu->posJoueur + 1] != '-' && carteJeu->allMap[carteJeu->posJoueur + 1] != '/' && carteJeu->allMap[carteJeu->posJoueur + 1] != '=' && carteJeu->posJoueur + 1 <= carteJeu->sizeMap) {
-								for (int i = 0; i < carteJeu->sizeMap; i++) {
+								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x - deplacement;	
+								}*/
+								if (mainCharactere->state < 10) {
+									carteJeu->posJoueur = carteJeu->posJoueur + 1;
+									mainCharactere->state = 10;									
+									mainCharactere->direction = 'd';
 								}
-								carteJeu->posJoueur = carteJeu->posJoueur + 1;
-								mainCharactere->state = 10;									
 							}
 							break;
 						case SDLK_q:
 							if (carteJeu->allMap[carteJeu->posJoueur - 1] != '-' && carteJeu->allMap[carteJeu->posJoueur - 1] != '=' && carteJeu->allMap[carteJeu->posJoueur - 1 ] != '/' && carteJeu->posJoueur - 1 >= 0) {
-								for (int i = 0; i < carteJeu->sizeMap; i++) {
+								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x + deplacement;	
+								}*/
+								if (mainCharactere->state < 10) {
+									carteJeu->posJoueur = carteJeu->posJoueur - 1;
+									mainCharactere->state = 10;									
+									mainCharactere->direction = 'q';
 								}
-								mainCharactere->state = 10;									
-								carteJeu->posJoueur = carteJeu->posJoueur - 1;
 							}
 							break;
 
 
 						case SDLK_s:
 							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '=' && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '-' && carteJeu->posJoueur + preOccurSlash <= carteJeu->sizeMap && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '/') {
-								for (int i = 0; i < carteJeu->sizeMap; i++) {
+								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y - deplacement;	
+								}*/
+								if (mainCharactere->state < 10) {
+									carteJeu->posJoueur = carteJeu->posJoueur + preOccurSlash;
+									mainCharactere->state = 10;									
+									mainCharactere->direction = 's';
 								}
-								carteJeu->posJoueur = carteJeu->posJoueur + preOccurSlash;
-								mainCharactere->state = 10;									
 							}
 							break;
 						case SDLK_z:
 							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '/' && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->posJoueur - preOccurSlash >= 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '-') {
-								for (int i = 0; i < carteJeu->sizeMap; i++) {
+								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;	
+								}*/
+								if (mainCharactere->state < 10) {
+									carteJeu->posJoueur = carteJeu->posJoueur - preOccurSlash;
+									mainCharactere->state = 10;									
+									mainCharactere->direction = 'z';
 								}
-								carteJeu->posJoueur = carteJeu->posJoueur - preOccurSlash;
-								mainCharactere->state = 10;									
 								
 							}
 							break;
@@ -229,6 +241,14 @@ FILE* readFile(const char path[]){
 	FILE* fileToOpen = NULL;
 	fileToOpen = fopen(path, "r"); 
 	return fileToOpen;
+}
+
+void deplacerCarteSansEvenement(int x, int y, sprite_t *allSprite, int sizeMap){
+		int i = 0;
+		for (i = 0; i < sizeMap; i++) {
+			allSprite[i].posEcran.x += x; 
+			allSprite[i].posEcran.y += y; 
+		}
 }
 
 void fileInArray(FILE** fileToGet, carte_t* carteJeu){

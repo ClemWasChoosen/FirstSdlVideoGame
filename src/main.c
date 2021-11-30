@@ -75,7 +75,7 @@ void mainLoop(SDL_Renderer* renderer){
 	while(!terminer){
 
 		Uint32 start_time, tempsBoucle = 0;
-		float fps;
+		//float fps;
 
   		start_time = SDL_GetTicks();
 		
@@ -126,8 +126,9 @@ void mainLoop(SDL_Renderer* renderer){
 		//SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
 
 		//Récupère les clicks du joueur
-		//deplacerCarte(SIZE_PIXEL * ZOOM_SCREEN, &carteJeu, evenements, preOccurSlash, &comptTour, &mainCharactere);
-
+		if (mainCharactere.state < 10) {
+			deplacerCarte((SIZE_PIXEL * ZOOM_SCREEN)/4, &carteJeu, evenements, preOccurSlash, &comptTour, &mainCharactere);
+		}
 
 		//Rendu de tous les sprites sur la carte
 		for (int i = 0; i < carteJeu.sizeMap;i++) {
@@ -137,7 +138,7 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
-		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere.state)) {
+		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere, carteJeu.allSprite, carteJeu.sizeMap)) {
 			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 			break;
 		}
@@ -163,8 +164,8 @@ void mainLoop(SDL_Renderer* renderer){
 		deltaTime += tempsBoucle;
 		
 
-		fprintf(stderr, "deltaTime %i\n", deltaTime);					
-  		fps = (tempsBoucle > 0) ? 1000.0f / tempsBoucle : 0.0f;
+		//fprintf(stderr, "deltaTime %i\n", deltaTime);					
+  		//fps = (tempsBoucle > 0) ? 1000.0f / tempsBoucle : 0.0f;
 		//fprintf(stderr, " %d ", fps);
 		
 	//Fin de la boucle 

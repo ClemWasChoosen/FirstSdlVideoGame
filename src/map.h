@@ -80,4 +80,6 @@ void fileInArray(FILE** fileToGet, carte_t* carteJeu);
  */
 FILE* readFile(const char path[]);
 
+void deplacerCarteSansEvenement(int x, int y, sprite_t *allSprite, int sizeMap);
+
 #endif 

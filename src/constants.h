@@ -21,4 +21,6 @@
  */
 #define ZOOM_SCREEN 4
 
+#define NBMOVEPSND 4
+
 #endif /* ifndef CONSTANTS_H */

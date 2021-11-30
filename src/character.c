@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include "character.h"
 #include "constants.h"
-
+#include "map.h"
+#include "sprite.h"
 
 int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizePlayer){
 	if (SDL_RenderCopy(renderer, player, &sizePlayer, &posEcran)) {
@@ -15,22 +16,61 @@ int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran,
 	return EXIT_SUCCESS;
 }
 
-int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, int *statePlayer){
+int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, character_t *mainCharactere, sprite_t *allSprite, int sizeMap){
 	//fprintf(stderr, "%d ", *statePlayer);
 	//250ms = toutes les 1/4 secondes
-	sizePlayer.x += 64 * (*statePlayer);
-	sizePlayer.y = SIZE_PIXEL * 1.7;
-	if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
-		return EXIT_FAILURE;		
+	if (mainCharactere->state < 10) {
+		
+		sizePlayer.x += 64 * (mainCharactere->state);
+		sizePlayer.y = SIZE_PIXEL * 1.7;
+		if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+			return EXIT_FAILURE;		
 
 
-	if (*deltaTime%250 == 0) {	
-		*statePlayer = *statePlayer + 1;
-		if (*statePlayer >= 4) {
-			*statePlayer = 0;			
+		if (*deltaTime >= 125) {	
+			mainCharactere->state = mainCharactere->state + 1;
+			if (mainCharactere->state >= 4) {
+				mainCharactere->state = 0;			
+			}
+			*deltaTime = 0;
+		//	fprintf(stderr, "Retour à 0 en 250ms\n");					
 		}
-		*deltaTime = 0;
-	//	fprintf(stderr, "Retour à 0 en 250ms\n");					
+	}else if (mainCharactere->state >= 10) {
+		
+		sizePlayer.x += 64 * (mainCharactere->state%10);
+		sizePlayer.y = SIZE_PIXEL * 1.7 + 64;
+		if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+			return EXIT_FAILURE;		
+		
+
+		if (*deltaTime >= 1000/15) {	
+			switch (mainCharactere->direction) {
+			case 'z':
+				deplacerCarteSansEvenement(0, (SIZE_PIXEL * ZOOM_SCREEN)/4, allSprite, sizeMap);
+				break;		
+			case 'q':
+				
+				deplacerCarteSansEvenement((SIZE_PIXEL * ZOOM_SCREEN)/4, 0, allSprite, sizeMap);
+				break;
+			case 's':
+				
+				deplacerCarteSansEvenement(0, -(SIZE_PIXEL * ZOOM_SCREEN)/4, allSprite, sizeMap);
+				break;
+			case 'd':
+				deplacerCarteSansEvenement(-(SIZE_PIXEL * ZOOM_SCREEN)/4, 0, allSprite, sizeMap);
+				break;
+			default:
+				
+			break;
+		}
+
+			mainCharactere->state += 1;
+			if (mainCharactere->state >= 14) {
+				mainCharactere->state = 0;			
+			}
+			*deltaTime = 0;
+		//	fprintf(stderr, "Retour à 0 en 250ms\n");					
+		}
 	}
 	
 /*	switch (*statePlayer) {
@@ -140,6 +180,9 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 }
 
 void init_spritePlayer(character_t *mainCharactere){
+	
+	mainCharactere->direction = 'd';
+
 	mainCharactere->charac.posSprite.x = SIZE_PIXEL * 1.5;
 	mainCharactere->charac.posSprite.y = SIZE_PIXEL * 1.7;
 	mainCharactere->charac.posSprite.h = SIZE_PIXEL * 2 ;

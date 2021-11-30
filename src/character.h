@@ -6,6 +6,7 @@
 struct character_s {
 	sprite_t charac;
 	int state;
+	char direction;
 };
 
 typedef struct character_s character_t;
@@ -25,6 +26,6 @@ int renderPlayer(SDL_Texture* player, SDL_Renderer *renderer, SDL_Rect posEcran,
  */
 void init_spritePlayer(character_t *mainCharactere);
 
-int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, int *state);
+int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, character_t *mainCharactere, sprite_t *allSprite, int sizeMap);
 
 #endif /* ifndef character_h */
