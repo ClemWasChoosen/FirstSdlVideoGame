@@ -75,15 +75,10 @@ void mainLoop(SDL_Renderer* renderer){
 	while(!terminer){
 
 		Uint32 start_time, tempsBoucle = 0;
-		//float fps;
 
   		start_time = SDL_GetTicks();
 		
   		
-		/*prevTime = currentTime;
-		currentTime = SDL_GetTicks();
-		deltaTime = (currentTime - prevTime) / 1000.0f;*/
-
 		SDL_PollEvent( &evenements );
 		switch(evenements.type)
 		{
@@ -114,26 +109,12 @@ void mainLoop(SDL_Renderer* renderer){
 			break;
 		}
 		//Récuperation de l'image permettant de faire la carte
-		if (mainCharactere.direction == 'd') {
-			player = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
+		player = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
 			if (player == NULL) {
         		fprintf(stderr, "Erreur recuperation du Joueur principal: %s", SDL_GetError());
 				SDL_DestroyTexture(player);
 				break;
 			}		
-		}else {
-			player = loadImage("./resources/16x16-knight-1-v3-reverse.bmp", renderer);
-			if (player == NULL) {
-        		fprintf(stderr, "Erreur recuperation du Joueur principal: %s", SDL_GetError());
-				SDL_DestroyTexture(player);
-				break;
-			}
-		}
-		
-
-		//mapToRender = loadImage("./resources/neonbrand-OjxsirfohHU-unsplash.bmp", renderer);
-
-		//SDL_QueryTexture(map, NULL, NULL, &textuW, &textuH);	
 
 		//Récupère les clicks du joueur
 		if (mainCharactere.state < 10) {
@@ -164,20 +145,11 @@ void mainLoop(SDL_Renderer* renderer){
 		SDL_Delay(20);
 		comptTour ++;
 
-		//fprintf(stderr, " %f + delta : %f", frameTime, deltaTime);
-
-
-		//SDL_Flip();
-
   		tempsBoucle = SDL_GetTicks()-start_time;
 
 		deltaTime += tempsBoucle;
 		
 
-		//fprintf(stderr, "deltaTime %i\n", deltaTime);					
-  		//fps = (tempsBoucle > 0) ? 1000.0f / tempsBoucle : 0.0f;
-		//fprintf(stderr, " %d ", fps);
-		
 	//Fin de la boucle 
 	}
 

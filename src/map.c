@@ -217,6 +217,20 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 								
 							}
 							break;
+						case SDLK_e:
+							if (mainCharactere->state < 10) {
+								mainCharactere->state = 20;									
+								mainCharactere->direction = 'd';
+							}
+
+							break;
+						case SDLK_a:
+							if (mainCharactere->state < 10) {
+								mainCharactere->state = 20;									
+								mainCharactere->direction = 'q';
+							}
+
+							break;
 
 				}	
 				break;

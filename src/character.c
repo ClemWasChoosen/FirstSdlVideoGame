@@ -1,3 +1,4 @@
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
 #include <stdio.h>
@@ -16,30 +17,28 @@ int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran,
 	return EXIT_SUCCESS;
 }
 
+int renderPlayerFlipH(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizePlayer){
+	posEcran.x -= posEcran.w - 64;
+	if (SDL_RenderCopyEx(renderer, player, &sizePlayer, &posEcran, 0, NULL, SDL_FLIP_HORIZONTAL)) {
+		fprintf(stderr, "Erreur SDL_RenderCopy : %s\n", SDL_GetError());		
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
+}
+
 int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, character_t *mainCharactere, sprite_t *allSprite, int sizeMap){
-	//fprintf(stderr, "%d ", *statePlayer);
 	//250ms = toutes les 1/4 secondes
 	if (mainCharactere->state < 10) {
-		
-/*		sizePlayer.x += 64 * (mainCharactere->state);
+		sizePlayer.x += 64 * (mainCharactere->state);
 		sizePlayer.y = SIZE_PIXEL * 1.7;
-		if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
-			return EXIT_FAILURE;	*/	
-
-
 		if (mainCharactere->direction == 'd') {
-			sizePlayer.x += 64 * (mainCharactere->state);
-			sizePlayer.y = SIZE_PIXEL * 1.7;
 			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
 				return EXIT_FAILURE;		
 		}else {
-			sizePlayer.x += 512 - 64 * (mainCharactere->state + 1);
-			sizePlayer.y = SIZE_PIXEL * 1.7;
-			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+			if (renderPlayerFlipH(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
 				return EXIT_FAILURE;		
 
 		}
-		fprintf(stderr, "%d\n", sizePlayer.x);
 
 		if (*deltaTime >= 125) {	
 			mainCharactere->state = mainCharactere->state + 1;
@@ -49,17 +48,14 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 			*deltaTime = 0;
 		//	fprintf(stderr, "Retour à 0 en 250ms\n");					
 		}
-	}else if (mainCharactere->state >= 10) {
-		
+	}else if (mainCharactere->state >= 10 && mainCharactere->state < 20) {
+		sizePlayer.x += 64 * (mainCharactere->state%10);
+		sizePlayer.y = SIZE_PIXEL * 1.7 + 64;
 		if (mainCharactere->direction == 'd') {
-			sizePlayer.x += 64 * (mainCharactere->state%10);
-			sizePlayer.y = SIZE_PIXEL * 1.7 + 64;
 			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
 				return EXIT_FAILURE;		
 		}else {
-			sizePlayer.x += 512 - 64 * (mainCharactere->state%10);
-			sizePlayer.y = SIZE_PIXEL * 1.7 + 64;
-			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+			if (renderPlayerFlipH(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
 				return EXIT_FAILURE;		
 
 		}
@@ -83,7 +79,7 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 			default:
 				
 			break;
-		}
+			}
 
 			mainCharactere->state += 1;
 			if (mainCharactere->state >= 14) {
@@ -91,8 +87,29 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 			}
 			*deltaTime = 0;
 		//	fprintf(stderr, "Retour à 0 en 250ms\n");					
+			}
+		}else if (mainCharactere->state >= 20) {
+			sizePlayer.x += 64 * (mainCharactere->state%10);
+			sizePlayer.y = SIZE_PIXEL * 1.7 + 4 * 64;
+
+			if (mainCharactere->direction == 'd') {
+								if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+					return EXIT_FAILURE;		
+			}else {
+				if (renderPlayerFlipH(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+					return EXIT_FAILURE;		
+
 		}
-	}
+
+		if (*deltaTime >= 125) {	
+			mainCharactere->state = mainCharactere->state + 1;
+			if (mainCharactere->state > 25) {
+				mainCharactere->state = 0;			
+			}
+			*deltaTime = 0;
+		}
+	
+		}
 	
 /*	switch (*statePlayer) {
 		case 0:
