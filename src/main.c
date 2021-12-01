@@ -114,12 +114,22 @@ void mainLoop(SDL_Renderer* renderer){
 			break;
 		}
 		//Récuperation de l'image permettant de faire la carte
-		player = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
-		if (player == NULL) {
-        	fprintf(stderr, "Erreur recuperation du Joueur principal: %s", SDL_GetError());
-			SDL_DestroyTexture(player);
-			break;
+		if (mainCharactere.direction == 'd') {
+			player = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
+			if (player == NULL) {
+        		fprintf(stderr, "Erreur recuperation du Joueur principal: %s", SDL_GetError());
+				SDL_DestroyTexture(player);
+				break;
+			}		
+		}else {
+			player = loadImage("./resources/16x16-knight-1-v3-reverse.bmp", renderer);
+			if (player == NULL) {
+        		fprintf(stderr, "Erreur recuperation du Joueur principal: %s", SDL_GetError());
+				SDL_DestroyTexture(player);
+				break;
+			}
 		}
+		
 
 		//mapToRender = loadImage("./resources/neonbrand-OjxsirfohHU-unsplash.bmp", renderer);
 

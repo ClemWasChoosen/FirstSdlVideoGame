@@ -21,11 +21,25 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 	//250ms = toutes les 1/4 secondes
 	if (mainCharactere->state < 10) {
 		
-		sizePlayer.x += 64 * (mainCharactere->state);
+/*		sizePlayer.x += 64 * (mainCharactere->state);
 		sizePlayer.y = SIZE_PIXEL * 1.7;
 		if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
-			return EXIT_FAILURE;		
+			return EXIT_FAILURE;	*/	
 
+
+		if (mainCharactere->direction == 'd') {
+			sizePlayer.x += 64 * (mainCharactere->state);
+			sizePlayer.y = SIZE_PIXEL * 1.7;
+			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+				return EXIT_FAILURE;		
+		}else {
+			sizePlayer.x += 512 - 64 * (mainCharactere->state + 1);
+			sizePlayer.y = SIZE_PIXEL * 1.7;
+			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+				return EXIT_FAILURE;		
+
+		}
+		fprintf(stderr, "%d\n", sizePlayer.x);
 
 		if (*deltaTime >= 125) {	
 			mainCharactere->state = mainCharactere->state + 1;
@@ -37,12 +51,19 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 		}
 	}else if (mainCharactere->state >= 10) {
 		
-		sizePlayer.x += 64 * (mainCharactere->state%10);
-		sizePlayer.y = SIZE_PIXEL * 1.7 + 64;
-		if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
-			return EXIT_FAILURE;		
-		
+		if (mainCharactere->direction == 'd') {
+			sizePlayer.x += 64 * (mainCharactere->state%10);
+			sizePlayer.y = SIZE_PIXEL * 1.7 + 64;
+			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+				return EXIT_FAILURE;		
+		}else {
+			sizePlayer.x += 512 - 64 * (mainCharactere->state%10);
+			sizePlayer.y = SIZE_PIXEL * 1.7 + 64;
+			if (renderPlayer(player, renderer, posEcran, sizePlayer) == EXIT_FAILURE) 
+				return EXIT_FAILURE;		
 
+		}
+		
 		if (*deltaTime >= 1000/15) {	
 			switch (mainCharactere->direction) {
 			case 'z':
