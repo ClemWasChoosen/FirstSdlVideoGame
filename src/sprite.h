@@ -2,7 +2,6 @@
 #define SPRITE_H
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_render.h>
 
 /*
  * Structure contenant les positons sur l'écran et depuis le fichier map (.bmp)
