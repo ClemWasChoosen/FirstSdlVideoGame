@@ -37,11 +37,11 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_Texture* map = NULL;
 	SDL_Texture* player = NULL;
 	FILE* fileToRead = NULL;
-	int comptTour = 0;
+	//int comptTour = 0;
 
-	float frameTime = 0;
-	int prevTime = 0;
-	int currentTime = 0;
+	//float frameTime = 0;
+	//int prevTime = 0;
+	//int currentTime = 0;
 	int deltaTime = 0;
 
 	//A deplacer
@@ -97,7 +97,7 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 		
-		frameTime += deltaTime;
+		//frameTime += deltaTime;
 		
 		SDL_RenderClear(renderer);
 
@@ -143,7 +143,7 @@ void mainLoop(SDL_Renderer* renderer){
 
 		SDL_RenderPresent(renderer);
 		SDL_Delay(20);
-		comptTour ++;
+		//comptTour ++;
 
   		tempsBoucle = SDL_GetTicks()-start_time;
 

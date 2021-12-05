@@ -161,7 +161,7 @@ void getSpriteMap(char value, SDL_Rect *sizeMap){
 }
 
 
-void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash, int *tourJeu, character_t *mainCharactere){
+void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash, character_t *mainCharactere){
 	if (carteJeu != NULL) {
 		switch (evenements.type) {
 			case SDL_KEYDOWN:
