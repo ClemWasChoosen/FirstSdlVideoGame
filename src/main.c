@@ -14,6 +14,7 @@
 #include "map.h"
 #include "sprite.h"
 #include "constants.h"
+#include "zombies.h"
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 {
@@ -36,7 +37,8 @@ void mainLoop(SDL_Renderer* renderer){
 	bool terminer = false;
 	SDL_Texture* map = NULL;
 	SDL_Texture* player = NULL;
-	FILE* fileToRead = NULL;
+	SDL_Texture* zombie = NULL;
+	FILE* fileMap = NULL;
 	//int comptTour = 0;
 
 	//float frameTime = 0;
@@ -49,13 +51,17 @@ void mainLoop(SDL_Renderer* renderer){
 
 	carte_t carteJeu;
 	character_t mainCharactere;
-	init_spriteMap(&carteJeu, &fileToRead);
+	zombiesAll_t allZombies;
+	init_spriteMap(&carteJeu, &fileMap);
 	init_spritePlayer(&mainCharactere);
+	init_spriteZombie(&allZombies, 0, carteJeu.allMap);
+
 	
-	if (fileToRead == NULL) {
+	if (fileMap == NULL) {
 		SDL_DestroyTexture(map);
 		free(carteJeu.allSprite);
 		free(carteJeu.allMap);
+		free(allZombies.zombiesTab);
 		return;
 	}
 
@@ -89,11 +95,11 @@ void mainLoop(SDL_Renderer* renderer){
 			{
 				case SDLK_ESCAPE:
 					terminer = true; break;
-				case SDLK_n:
+				/*case SDLK_n:
 					for (int i = 0; i < carteJeu.sizeMap; i++) {
 						carteJeu.allSprite[i].posEcran.x += 200.0f * deltaTime;	
 					}
-				break;
+				break;*/
 			}
 		}
 		
@@ -110,15 +116,22 @@ void mainLoop(SDL_Renderer* renderer){
 		}
 		//Récuperation de l'image permettant de faire la carte
 		player = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
-			if (player == NULL) {
-        		fprintf(stderr, "Erreur recuperation du Joueur principal: %s", SDL_GetError());
-				SDL_DestroyTexture(player);
-				break;
-			}		
+		if (player == NULL) {
+			fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
+			SDL_DestroyTexture(player);
+			break;
+		}		
+
+		zombie = loadImage("./resources/Zombie.bmp", renderer);
+		if (zombie == NULL) {
+			fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
+			SDL_DestroyTexture(player);
+			break;
+		}		
 
 		//Récupère les clicks du joueur
 		if (mainCharactere.state < 10) {
-			deplacerCarte((SIZE_PIXEL * ZOOM_SCREEN)/4, &carteJeu, evenements, preOccurSlash, &comptTour, &mainCharactere);
+			deplacerCarte((SIZE_PIXEL * ZOOM_SCREEN)/4, &carteJeu, evenements, preOccurSlash, &mainCharactere);
 		}
 
 		//Rendu de tous les sprites sur la carte
@@ -133,6 +146,12 @@ void mainLoop(SDL_Renderer* renderer){
 			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 			break;
 		}
+
+		if (renderZombie(zombie, renderer, allZombies.zombiesTab[1].zmb.posEcran, allZombies.zombiesTab[1].zmb.posSprite)){
+			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
+			break;
+		}
+		
 
 		//######### Pour debug ###########
 		//Affiche un point au centre de l'écran
@@ -158,6 +177,7 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_DestroyTexture(player);
 	free(carteJeu.allSprite);
 	free(carteJeu.allMap);
+	free(allZombies.zombiesTab);
 }
 
 int main(int argc, char *argv[])

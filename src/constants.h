@@ -23,4 +23,6 @@
 
 #define NBMOVEPSND 4
 
+#define NBZOMBIES 1
+
 #endif /* ifndef CONSTANTS_H */
