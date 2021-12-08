@@ -60,17 +60,16 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 
 		}
 		
+		//Ajouter le déplacement des squelettes ici
 		if (*deltaTime >= 1000/15) {	
 			switch (mainCharactere->direction) {
 			case 'z':
 				deplacerCarteSansEvenement(0, (SIZE_PIXEL * ZOOM_SCREEN)/4, allSprite, sizeMap);
 				break;		
 			case 'q':
-				
 				deplacerCarteSansEvenement((SIZE_PIXEL * ZOOM_SCREEN)/4, 0, allSprite, sizeMap);
 				break;
 			case 's':
-				
 				deplacerCarteSansEvenement(0, -(SIZE_PIXEL * ZOOM_SCREEN)/4, allSprite, sizeMap);
 				break;
 			case 'd':

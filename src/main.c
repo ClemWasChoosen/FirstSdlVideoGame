@@ -45,6 +45,7 @@ void mainLoop(SDL_Renderer* renderer){
 	//int prevTime = 0;
 	//int currentTime = 0;
 	int deltaTime = 0;
+	int deltaTimeZombies = 0;
 
 	//A deplacer
 	//int statePlayer = 0;
@@ -54,7 +55,9 @@ void mainLoop(SDL_Renderer* renderer){
 	zombiesAll_t allZombies;
 	init_spriteMap(&carteJeu, &fileMap);
 	init_spritePlayer(&mainCharactere);
-	init_spriteZombie(&allZombies, 0, carteJeu.allMap);
+	placerCarteCentre(&carteJeu);
+	
+	init_spriteZombie(&allZombies, 0, carteJeu.allMap, carteJeu.allSprite[0].posEcran);
 
 	
 	if (fileMap == NULL) {
@@ -64,8 +67,6 @@ void mainLoop(SDL_Renderer* renderer){
 		free(allZombies.zombiesTab);
 		return;
 	}
-
-	placerCarteCentre(&carteJeu);
 
 	//Utilisé pour aller de haut en bas dans le tableau
 	int preOccurSlash = 0;
@@ -115,14 +116,14 @@ void mainLoop(SDL_Renderer* renderer){
 			break;
 		}
 		//Récuperation de l'image permettant de faire la carte
-		player = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
+		player = loadImage("./resources/16x16-knight-2-v3.bmp", renderer);
 		if (player == NULL) {
 			fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
 			SDL_DestroyTexture(player);
 			break;
 		}		
 
-		zombie = loadImage("./resources/Zombie.bmp", renderer);
+		zombie = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
 		if (zombie == NULL) {
 			fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
 			SDL_DestroyTexture(player);
@@ -147,7 +148,7 @@ void mainLoop(SDL_Renderer* renderer){
 			break;
 		}
 
-		if (renderZombie(zombie, renderer, allZombies.zombiesTab[1].zmb.posEcran, allZombies.zombiesTab[1].zmb.posSprite)){
+		if (renderAnimeZombie(zombie, renderer, allZombies.zombiesTab[1].zmb.posEcran, allZombies.zombiesTab[1].zmb.posSprite, &deltaTimeZombies, &allZombies.zombiesTab[1])){
 			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 			break;
 		}
@@ -167,6 +168,7 @@ void mainLoop(SDL_Renderer* renderer){
   		tempsBoucle = SDL_GetTicks()-start_time;
 
 		deltaTime += tempsBoucle;
+		deltaTimeZombies += tempsBoucle;
 		
 
 	//Fin de la boucle 
@@ -177,7 +179,6 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_DestroyTexture(player);
 	free(carteJeu.allSprite);
 	free(carteJeu.allMap);
-	free(allZombies.zombiesTab);
 }
 
 int main(int argc, char *argv[])
