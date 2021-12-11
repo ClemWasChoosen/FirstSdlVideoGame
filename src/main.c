@@ -56,8 +56,17 @@ void mainLoop(SDL_Renderer* renderer){
 	init_spriteMap(&carteJeu, &fileMap);
 	init_spritePlayer(&mainCharactere);
 	placerCarteCentre(&carteJeu);
+
+	//Utilisé pour aller de haut en bas dans le tableau
+	int preOccurSlash = 0;
+	for (int r = 0; r < carteJeu.sizeMap; r++) {
+			if (carteJeu.allMap[r] == '/') {
+				preOccurSlash = r + 1;
+				break;	
+			}
+	}
 	
-	init_spriteZombie(&allZombies, 0, carteJeu.allMap, carteJeu.allSprite[0].posEcran);
+	init_spriteZombie(&allZombies, 0, carteJeu.allMap, carteJeu.sizeMap, carteJeu.allSprite[0].posEcran, preOccurSlash);
 
 	
 	if (fileMap == NULL) {
@@ -68,14 +77,7 @@ void mainLoop(SDL_Renderer* renderer){
 		return;
 	}
 
-	//Utilisé pour aller de haut en bas dans le tableau
-	int preOccurSlash = 0;
-	for (int r = 0; r < carteJeu.sizeMap; r++) {
-			if (carteJeu.allMap[r] == '/') {
-				preOccurSlash = r + 1;
-				break;	
-			}
-	}
+	
 
 
 	// Boucle principale
@@ -143,12 +145,12 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
-		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere, carteJeu.allSprite, carteJeu.sizeMap)) {
+		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere, carteJeu.allSprite, carteJeu.sizeMap, &allZombies)) {
 			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 			break;
 		}
 
-		if (renderAnimeZombie(zombie, renderer, allZombies.zombiesTab[1].zmb.posEcran, allZombies.zombiesTab[1].zmb.posSprite, &deltaTimeZombies, &allZombies.zombiesTab[1])){
+		if (renderAnimeZombie(zombie, renderer, allZombies.zombiesTab[0].zmb.posEcran, allZombies.zombiesTab[0].zmb.posSprite, &deltaTimeZombies, &allZombies.zombiesTab[0])){
 			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 			break;
 		}
@@ -179,9 +181,10 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_DestroyTexture(player);
 	free(carteJeu.allSprite);
 	free(carteJeu.allMap);
+	free(allZombies.zombiesTab);
 }
 
-int main(int argc, char *argv[])
+int main(/*int argc, char *argv[]*/)
 {
 	SDL_Window* fenetre = NULL; // Déclaration de la fenêtre
 	SDL_Renderer* renderer = NULL;

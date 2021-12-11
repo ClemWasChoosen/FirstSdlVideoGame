@@ -8,6 +8,7 @@
 #include "constants.h"
 #include "map.h"
 #include "sprite.h"
+#include "zombies.h"
 
 int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizePlayer){
 	if (SDL_RenderCopy(renderer, player, &sizePlayer, &posEcran)) {
@@ -26,7 +27,7 @@ int renderPlayerFlipH(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posE
 	return EXIT_SUCCESS;
 }
 
-int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, character_t *mainCharactere, sprite_t *allSprite, int sizeMap){
+int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, character_t *mainCharactere, sprite_t *allSprite, int sizeMap, zombiesAll_t *allZombies){
 	//250ms = toutes les 1/4 secondes
 	if (mainCharactere->state < 10) {
 		sizePlayer.x += 64 * (mainCharactere->state);
@@ -64,15 +65,19 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 		if (*deltaTime >= 1000/15) {	
 			switch (mainCharactere->direction) {
 			case 'z':
+				deplacerZombieSansEvenement(0, (SIZE_PIXEL * ZOOM_SCREEN)/4, allZombies->zombiesTab);
 				deplacerCarteSansEvenement(0, (SIZE_PIXEL * ZOOM_SCREEN)/4, allSprite, sizeMap);
 				break;		
 			case 'q':
+				deplacerZombieSansEvenement((SIZE_PIXEL * ZOOM_SCREEN)/4, 0, allZombies->zombiesTab);
 				deplacerCarteSansEvenement((SIZE_PIXEL * ZOOM_SCREEN)/4, 0, allSprite, sizeMap);
 				break;
 			case 's':
+				deplacerZombieSansEvenement(0, -(SIZE_PIXEL * ZOOM_SCREEN)/4, allZombies->zombiesTab);
 				deplacerCarteSansEvenement(0, -(SIZE_PIXEL * ZOOM_SCREEN)/4, allSprite, sizeMap);
 				break;
 			case 'd':
+				deplacerZombieSansEvenement(-(SIZE_PIXEL * ZOOM_SCREEN)/4, 0, allZombies->zombiesTab);
 				deplacerCarteSansEvenement(-(SIZE_PIXEL * ZOOM_SCREEN)/4, 0, allSprite, sizeMap);
 				break;
 			default:

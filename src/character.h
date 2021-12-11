@@ -2,6 +2,7 @@
 #define character_h 
 
 #include "sprite.h"
+#include "zombies.h"
 
 struct character_s {
 	sprite_t charac;
@@ -28,7 +29,7 @@ int renderPlayerFlipH(SDL_Texture* player, SDL_Renderer *renderer, SDL_Rect posE
  */
 void init_spritePlayer(character_t *mainCharactere);
 
-int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, character_t *mainCharactere, sprite_t *allSprite, int sizeMap);
+int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, character_t *mainCharactere, sprite_t *allSprite, int sizeMap, zombiesAll_t *allZombies);
 
 
 #endif /* ifndef character_h */

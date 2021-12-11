@@ -1,3 +1,11 @@
+/*
+* =================================
+*	TODO
+*	Changer tous les noms en ENEMY
+*
+* =================================
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
@@ -22,28 +30,60 @@ int renderZombieFlipH(SDL_Texture *zombie, SDL_Renderer *renderer, SDL_Rect posE
 	return EXIT_SUCCESS;
 }
 
-void init_spriteZombie(zombiesAll_t *zombie, int posInit, char* mapFrom, SDL_Rect posEcranMapHG){
+void deplacerZombieSansEvenement(int x, int y, zombie_t* zombiesTab){
+		int i = 0;
+		for (i = 0; i < NBZOMBIES; i++) {
+			zombiesTab[i].zmb.posEcran.x += x; 
+			zombiesTab[i].zmb.posEcran.y += y; 
+		}
+}
+
+int getRandomValueInMap(char* map, int sizeMax, int preOccurSlash, int *x, int *y){
+	int random = rand() % sizeMax;
+	if (map[random] != '-' &&  map[random] != '/' && map[random] != '=')
+	{
+		int count = 0;
+		fprintf(stderr, "map : %s\n", map);
+		for (int i = 0; i < random; i++)
+		{
+			if (map[i] == '/')
+			{
+				count++;
+			}
+		}
+		*x = random % preOccurSlash;
+		*y = count;
+		
+		return random;
+	}else{
+		return getRandomValueInMap(map, sizeMax, preOccurSlash, x, y);
+	}
+}
+
+void init_spriteZombie(zombiesAll_t *zombie, int posInit, char* mapFromFile, int sizeMap, SDL_Rect posEcranMapHG, int preOccurSlash){
+	int xToadd = 0;
+	int yToadd = 0;
+
+	zombie->allMapFile = mapFromFile;
 	
-	
-    //zombie->zombiesTab = malloc(NBZOMBIES * sizeof(zombie->zombiesTab));
-    zombie->zombiesTab[1].direction ='d';
-    zombie->zombiesTab[1].posZombie = posInit;
+    zombie->zombiesTab = malloc(NBZOMBIES * sizeof(*(zombie->zombiesTab)));
+    zombie->zombiesTab[0].direction ='d';
+	zombie->zombiesTab[0].posZombie = getRandomValueInMap(zombie->allMapFile, sizeMap, preOccurSlash, &xToadd, &yToadd);
+	//fprintf(stderr, "random = %d, x = %d, y = %d\n", zombie->zombiesTab[0].posZombie, xToadd, yToadd);
 
-    zombie->allMapFile = mapFrom;
+	zombie->zombiesTab[0].zmb.posSprite.x = SIZE_PIXEL * 1.5;
+	zombie->zombiesTab[0].zmb.posSprite.y = SIZE_PIXEL * 1.7;
+	zombie->zombiesTab[0].zmb.posSprite.h = SIZE_PIXEL * 2;
+	zombie->zombiesTab[0].zmb.posSprite.w = SIZE_PIXEL * 2;
 
-	zombie->zombiesTab[1].zmb.posSprite.x = SIZE_PIXEL * 1.5;
-	zombie->zombiesTab[1].zmb.posSprite.y = SIZE_PIXEL * 1.7;;
-	zombie->zombiesTab[1].zmb.posSprite.h = SIZE_PIXEL * 2;
-	zombie->zombiesTab[1].zmb.posSprite.w = SIZE_PIXEL * 2;
-
-	zombie->zombiesTab[1].zmb.posEcran.x = posEcranMapHG.x;
+	zombie->zombiesTab[0].zmb.posEcran.x = posEcranMapHG.x + SIZE_PIXEL * ZOOM_SCREEN * xToadd;
 	//WINDOW_WIDTH / 3 - (zombie->zombiesTab[1].zmb.posSprite.w ); 
-	zombie->zombiesTab[1].zmb.posEcran.y = posEcranMapHG.y - (zombie->zombiesTab[1].zmb.posSprite.h * 2);
+	zombie->zombiesTab[0].zmb.posEcran.y = (posEcranMapHG.y - (zombie->zombiesTab[0].zmb.posSprite.h * 1.5)) + SIZE_PIXEL * ZOOM_SCREEN * yToadd;
 	//WINDOW_HEIGHT / 3 - (zombie->zombiesTab[1].zmb.posSprite.h * 2.5); 
-	zombie->zombiesTab[1].zmb.posEcran.h = SIZE_PIXEL * ZOOM_SCREEN * 2;
-	zombie->zombiesTab[1].zmb.posEcran.w = SIZE_PIXEL * ZOOM_SCREEN * 2;
+	zombie->zombiesTab[0].zmb.posEcran.h = SIZE_PIXEL * ZOOM_SCREEN * 2;
+	zombie->zombiesTab[0].zmb.posEcran.w = SIZE_PIXEL * ZOOM_SCREEN * 2;
 
-	zombie->zombiesTab[1].state = 1;
+	zombie->zombiesTab[0].state = 1;
 
 }
 
