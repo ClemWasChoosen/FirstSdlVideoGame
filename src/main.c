@@ -15,6 +15,7 @@
 #include "sprite.h"
 #include "constants.h"
 #include "zombies.h"
+#include "time.h"
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 {
@@ -32,7 +33,7 @@ int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 }
 
 
-void mainLoop(SDL_Renderer* renderer){	
+void mainLoop(SDL_Renderer* renderer){
 	SDL_Event evenements; // Événements liés à la fenêtre
 	bool terminer = false;
 	SDL_Texture* map = NULL;
@@ -62,13 +63,13 @@ void mainLoop(SDL_Renderer* renderer){
 	for (int r = 0; r < carteJeu.sizeMap; r++) {
 			if (carteJeu.allMap[r] == '/') {
 				preOccurSlash = r + 1;
-				break;	
+				break;
 			}
 	}
-	
+
 	init_spriteZombie(&allZombies, 0, carteJeu.allMap, carteJeu.sizeMap, carteJeu.allSprite[0].posEcran, preOccurSlash);
 
-	
+
 	if (fileMap == NULL) {
 		SDL_DestroyTexture(map);
 		free(carteJeu.allSprite);
@@ -77,7 +78,7 @@ void mainLoop(SDL_Renderer* renderer){
 		return;
 	}
 
-	
+
 
 
 	// Boucle principale
@@ -86,8 +87,8 @@ void mainLoop(SDL_Renderer* renderer){
 		Uint32 start_time, tempsBoucle = 0;
 
   		start_time = SDL_GetTicks();
-		
-  		
+
+
 		SDL_PollEvent( &evenements );
 		switch(evenements.type)
 		{
@@ -100,15 +101,16 @@ void mainLoop(SDL_Renderer* renderer){
 					terminer = true; break;
 				/*case SDLK_n:
 					for (int i = 0; i < carteJeu.sizeMap; i++) {
-						carteJeu.allSprite[i].posEcran.x += 200.0f * deltaTime;	
+						carteJeu.allSprite[i].posEcran.x += 200.0f * deltaTime;
 					}
 				break;*/
 			}
 		}
-		
+
 		//frameTime += deltaTime;
-		
+
 		SDL_RenderClear(renderer);
+
 
 		//Récuperation de l'image permettant de faire la carte
 		map = loadImage("./resources/dungeon_tiles.bmp", renderer);
@@ -123,14 +125,14 @@ void mainLoop(SDL_Renderer* renderer){
 			fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
 			SDL_DestroyTexture(player);
 			break;
-		}		
+		}
 
 		zombie = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
 		if (zombie == NULL) {
 			fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
 			SDL_DestroyTexture(player);
 			break;
-		}		
+		}
 
 		//Récupère les clicks du joueur
 		if (mainCharactere.state < 10) {
@@ -141,8 +143,17 @@ void mainLoop(SDL_Renderer* renderer){
 		for (int i = 0; i < carteJeu.sizeMap;i++) {
 			if (renderMap(map, renderer, carteJeu.allSprite[i].posEcran, carteJeu.allSprite[i].posSprite)) {
         		fprintf(stderr, "Erreur SDL_Crstart_timeeateTextureFromSurface : %s", SDL_GetError());
-				break;	
+				break;
 			}
+		}
+
+		for (int i = 0; i < NBZOMBIES; i++)
+		{
+			if (renderAnimeZombie(zombie, renderer, allZombies.zombiesTab[i].zmb.posEcran, allZombies.zombiesTab[i].zmb.posSprite, &deltaTimeZombies, &allZombies.zombiesTab[i])){
+				fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
+				break;
+			}
+			//fprintf(stderr, "state[%d], %d\n", i, allZombies.zombiesTab[i].state);
 		}
 
 		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere, carteJeu.allSprite, carteJeu.sizeMap, &allZombies)) {
@@ -150,11 +161,7 @@ void mainLoop(SDL_Renderer* renderer){
 			break;
 		}
 
-		if (renderAnimeZombie(zombie, renderer, allZombies.zombiesTab[0].zmb.posEcran, allZombies.zombiesTab[0].zmb.posSprite, &deltaTimeZombies, &allZombies.zombiesTab[0])){
-			fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
-			break;
-		}
-		
+
 
 		//######### Pour debug ###########
 		//Affiche un point au centre de l'écran
@@ -171,12 +178,12 @@ void mainLoop(SDL_Renderer* renderer){
 
 		deltaTime += tempsBoucle;
 		deltaTimeZombies += tempsBoucle;
-		
 
-	//Fin de la boucle 
+
+	//Fin de la boucle
 	}
 
-	//Libère la mémoire 
+	//Libère la mémoire
 	SDL_DestroyTexture(map);
 	SDL_DestroyTexture(player);
 	free(carteJeu.allSprite);
@@ -186,6 +193,9 @@ void mainLoop(SDL_Renderer* renderer){
 
 int main(/*int argc, char *argv[]*/)
 {
+	time_t temps = time(NULL);
+	srand(temps);
+
 	SDL_Window* fenetre = NULL; // Déclaration de la fenêtre
 	SDL_Renderer* renderer = NULL;
 	if(SDL_Init(SDL_INIT_VIDEO) < 0) // Initialisation de la SDL
@@ -196,13 +206,13 @@ int main(/*int argc, char *argv[]*/)
 	}
 
 	// Créer la fenêtre
-	if (SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &fenetre, &renderer)) {	
+	if (SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &fenetre, &renderer)) {
 		printf("Erreur de la creation d’une fenetre et du renderer: %s",SDL_GetError());
 		SDL_Quit();
 		return EXIT_FAILURE;
-	}		
+	}
 
-	SDL_SetWindowTitle(fenetre, "Samourai vs Zombies");	
+	SDL_SetWindowTitle(fenetre, "Samourai vs Zombies");
 
 	//Boucle du jeu créée dans une fonction
 	mainLoop(renderer);
