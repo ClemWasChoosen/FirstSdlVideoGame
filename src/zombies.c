@@ -2,7 +2,9 @@
 * =================================
 *	TODO
 *	Changer tous les noms en ENEMY
-*
+*	- sauvegarde
+*   - gestion d'erreurs fichiers entrée
+*   - souris
 * =================================
 */
 
@@ -67,7 +69,7 @@ void init_spriteZombie(zombiesAll_t *zombie, int posInit, char* mapFromFile, int
 
 	zombie->allMapFile = mapFromFile;
 
-    zombie->zombiesTab = malloc(NBZOMBIES * sizeof(*(zombie->zombiesTab)));
+    zombie->zombiesTab = malloc(NBZOMBIES * sizeof(zombie_t));
 
 	for (int i = 0; i < NBZOMBIES; i++)
 	{
