@@ -246,19 +246,32 @@ void init_spritePlayer(character_t *mainCharactere){
 }
 
 
-void attackOnRight(SDL_Event evenements, zombiesAll_t *allZombies, int posJoueur){
+
+
+void attackOnZombies(SDL_Event evenements, zombiesAll_t *allZombies, int posJoueur){
 	switch(evenements.type)
 	{
 		case SDL_KEYDOWN:
 		switch(evenements.key.keysym.sym)
 		{
-			case SDLK_e:
+			case SDLK_a:
 				for (int i = 0; i < NBZOMBIES; i++) {
-					if (allZombies->zombiesTab[i].posZombie == posJoueur + 1) {
-						allZombies->zombiesTab[i].display = 0;
+					if (allZombies->zombiesTab[i].posZombie == posJoueur - 1 && allZombies->zombiesTab[i].display == 1) {
+						allZombies->zombiesTab[i].display = -1;
+						allZombies->zombiesTab[i].state = 70;
+						allZombies->zombiesTab[i].direction = 'q';
 					}
 				}
 				break;
+				case SDLK_e:
+					for (int i = 0; i < NBZOMBIES; i++) {
+						if (allZombies->zombiesTab[i].posZombie == posJoueur + 1 && allZombies->zombiesTab[i].display == 1) {
+							allZombies->zombiesTab[i].display = -1;
+							allZombies->zombiesTab[i].state = 70;
+							allZombies->zombiesTab[i].direction = 'd';
+						}
+					}
+					break;
 		}
 	}
 }

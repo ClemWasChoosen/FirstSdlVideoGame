@@ -48,7 +48,7 @@ void mainLoop(SDL_Renderer* renderer){
 	//int currentTime = 0;
   //int deltaTimeWait = 0;
 	int deltaTime = 0;
-	int deltaTimeZombies = 0;
+	//int deltaTimeZombies = 0;
   const int frameDelay = 1000/FPS;
 
 	//A deplacer
@@ -70,7 +70,7 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 	}
 
-	init_spriteZombie(&allZombies, 0, carteJeu.allMap, carteJeu.sizeMap, carteJeu.allSprite[0].posEcran, preOccurSlash);
+	init_spriteZombie(&allZombies, carteJeu.allMap, carteJeu.sizeMap, carteJeu.allSprite[0].posEcran, preOccurSlash);
 
 
 	if (fileMap == NULL) {
@@ -151,15 +151,12 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
-
-
 		for (int i = 0; i < NBZOMBIES; i++)
 		{
-			if (renderAnimeZombie(zombie, renderer, allZombies.zombiesTab[i].zmb.posEcran, allZombies.zombiesTab[i].zmb.posSprite, &deltaTimeZombies, &allZombies.zombiesTab[i])){
+			if (renderAnimeZombie(zombie, renderer, allZombies.zombiesTab[i].zmb.posEcran, allZombies.zombiesTab[i].zmb.posSprite, &allZombies.zombiesTab[i])){
 				fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 				break;
 			}
-			//fprintf(stderr, "state[%d], %d\n", i, allZombies.zombiesTab[i].state);
 		}
 
 		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere, carteJeu.allSprite, carteJeu.sizeMap, &allZombies)) {
@@ -167,7 +164,8 @@ void mainLoop(SDL_Renderer* renderer){
 			break;
 		}
 
-
+    attackOnZombies(evenements, &allZombies, carteJeu.posJoueur);
+    //attackOnRight(evenements, &allZombies, carteJeu.posJoueur);
 
 		//######### Pour debug ###########
 		//Affiche un point au centre de l'écran
@@ -183,8 +181,13 @@ void mainLoop(SDL_Renderer* renderer){
   	tempsBoucle = SDL_GetTicks()-start_time;
 
 		deltaTime += tempsBoucle;
-		deltaTimeZombies += tempsBoucle;
+		//deltaTimeZombies += tempsBoucle;
     //deltaTimeWait += tempsBoucle;
+
+    for (int i = 0; i < NBZOMBIES; i++)
+		{
+      allZombies.zombiesTab[i].deltaTime += tempsBoucle;
+		}
 
     //float elapsedMS = tempsBoucle / (float)SDL_GetPerformanceFrequency() * 1000.0f;
 

@@ -63,13 +63,13 @@ int getRandomValueInMap(char* map, int sizeMax, int preOccurSlash, int *x, int *
 	}
 }
 
-void init_spriteZombie(zombiesAll_t *zombie, int posInit, char* mapFromFile, int sizeMap, SDL_Rect posEcranMapHG, int preOccurSlash){
+void init_spriteZombie(zombiesAll_t *zombie, char* mapFromFile, int sizeMap, SDL_Rect posEcranMapHG, int preOccurSlash){
 	int xToadd = 0;
 	int yToadd = 0;
 
 	zombie->allMapFile = mapFromFile;
 
-  zombie->zombiesTab = malloc(NBZOMBIES * sizeof(zombie_t));
+  zombie->zombiesTab = (zombie_t*)malloc(NBZOMBIES * sizeof(zombie_t));
 
 	for (int i = 0; i < NBZOMBIES; i++)
 	{
@@ -91,13 +91,17 @@ void init_spriteZombie(zombiesAll_t *zombie, int posInit, char* mapFromFile, int
 
 		zombie->zombiesTab[i].display = 1;
 		zombie->zombiesTab[i].state = 1;
+
+		zombie->zombiesTab[i].deltaTime = 0;
 	}
 
 
 }
 
-int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizeZombie, int *deltaTime, zombie_t *zombie){
+int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizeZombie, zombie_t *zombie){
 	//250ms = toutes les 1/4 secondes
+
+	//fprintf(stderr, "%d\n", zombie->state);
 
 	if (zombie->state < 10) {
 		sizeZombie.x += 64 * (zombie->state);
@@ -113,14 +117,34 @@ int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rec
 			}
 		}
 
-		if (*deltaTime >= 125) {
-			for (size_t i = 0; i < NBZOMBIES; i++) {
-				zombie[i].state += 1;
-				if (zombie[i].state >= 4) {
-					zombie[i].state = 0;
+		if (zombie->deltaTime >= 150) {
+			//for (size_t i = 0; i < NBZOMBIES; i++) {
+				zombie->state += 1;
+				if (zombie->state >= 4) {
+					zombie->state = 0;
 				}
-			}
-			*deltaTime = 0;
+			//}
+			zombie->deltaTime = 0;
+		}
+	}else if(zombie->state >= 70 && zombie->state <= 77 && zombie->display == -1){
+		sizeZombie.x += 64 * (zombie->state%10);
+		sizeZombie.y = SIZE_PIXEL * 1.7 + 6 * 64;
+		if (zombie->direction == 'd') {
+			if (renderZombie(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
+				return EXIT_FAILURE;
+		}else {
+			if (renderZombieFlipH(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
+				return EXIT_FAILURE;
+
+		}
+
+		if (zombie->deltaTime >= 150) {
+				zombie->state += 1;
+				if (zombie->state >= 77) {
+					zombie->state = 0;
+					zombie->display = 0;
+				}
+			zombie->deltaTime = 0;
 		}
 	}
 	return EXIT_SUCCESS;

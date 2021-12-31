@@ -9,6 +9,7 @@ struct zombie_s{
 	int state;
 	char direction;
 	int display;
+	int deltaTime;
 };
 
 typedef struct zombie_s zombie_t;
@@ -23,9 +24,9 @@ typedef struct zombiesAll_s zombiesAll_t;
 
 int renderZombie(SDL_Texture *zombie, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizePlayer);
 
-void init_spriteZombie(zombiesAll_t *zombie, int posInit, char* mapFromFile, int sizeMap, SDL_Rect posEcranMapHG, int preOccurSlash);
+void init_spriteZombie(zombiesAll_t *zombie, char* mapFromFile, int sizeMap, SDL_Rect posEcranMapHG, int preOccurSlash);
 
-int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, zombie_t *zombie);
+int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, zombie_t *zombie);
 
 int renderZombieFlipH(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizePlayer);
 
