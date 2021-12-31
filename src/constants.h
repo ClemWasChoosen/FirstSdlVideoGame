@@ -4,12 +4,12 @@
 /**
  * \brief Largeur de la fenetre
  */
-#define WINDOW_HEIGHT 800 
+#define WINDOW_HEIGHT 800
 
 /**
  * \brief Hauteur de la fenetre
  */
-#define WINDOW_WIDTH 800 
+#define WINDOW_WIDTH 800
 
 /**
  * \brief Taille d'une tiles en pixel
@@ -24,5 +24,7 @@
 #define NBMOVEPSND 4
 
 #define NBZOMBIES 2
+
+#define FPS 150
 
 #endif /* ifndef CONSTANTS_H */

@@ -46,7 +46,7 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 			if (mainCharactere->state >= 4) {
 				mainCharactere->state = 0;
 			}
-			*deltaTime = 0;				
+			*deltaTime = 0;
 		}
 	}else if (mainCharactere->state >= 10 && mainCharactere->state < 20) {
 		sizePlayer.x += 64 * (mainCharactere->state%10);
@@ -243,4 +243,22 @@ void init_spritePlayer(character_t *mainCharactere){
 
 	mainCharactere->state = 1;
 
+}
+
+
+void attackOnRight(SDL_Event evenements, zombiesAll_t *allZombies, int posJoueur){
+	switch(evenements.type)
+	{
+		case SDL_KEYDOWN:
+		switch(evenements.key.keysym.sym)
+		{
+			case SDLK_e:
+				for (int i = 0; i < NBZOMBIES; i++) {
+					if (allZombies->zombiesTab[i].posZombie == posJoueur + 1) {
+						allZombies->zombiesTab[i].display = 0;
+					}
+				}
+				break;
+		}
+	}
 }

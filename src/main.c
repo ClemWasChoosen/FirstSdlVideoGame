@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include "character.h"
 #include "map.h"
 #include "sprite.h"
@@ -45,8 +46,10 @@ void mainLoop(SDL_Renderer* renderer){
 	//float frameTime = 0;
 	//int prevTime = 0;
 	//int currentTime = 0;
+  //int deltaTimeWait = 0;
 	int deltaTime = 0;
 	int deltaTimeZombies = 0;
+  const int frameDelay = 1000/FPS;
 
 	//A deplacer
 	//int statePlayer = 0;
@@ -140,12 +143,15 @@ void mainLoop(SDL_Renderer* renderer){
 		}
 
 		//Rendu de tous les sprites sur la carte
-		for (int i = 0; i < carteJeu.sizeMap;i++) {
+
+    for (int i = 0; i < carteJeu.sizeMap;i++) {
 			if (renderMap(map, renderer, carteJeu.allSprite[i].posEcran, carteJeu.allSprite[i].posSprite)) {
         		fprintf(stderr, "Erreur SDL_Crstart_timeeateTextureFromSurface : %s", SDL_GetError());
 				break;
 			}
 		}
+
+
 
 		for (int i = 0; i < NBZOMBIES; i++)
 		{
@@ -171,13 +177,23 @@ void mainLoop(SDL_Renderer* renderer){
 		}
 
 		SDL_RenderPresent(renderer);
-		SDL_Delay(20);
+		//SDL_Delay(20);
 		//comptTour ++;
 
-  		tempsBoucle = SDL_GetTicks()-start_time;
+  	tempsBoucle = SDL_GetTicks()-start_time;
 
 		deltaTime += tempsBoucle;
 		deltaTimeZombies += tempsBoucle;
+    //deltaTimeWait += tempsBoucle;
+
+    //float elapsedMS = tempsBoucle / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+
+	  // Cap to 60 FPS
+    //fprintf(stderr, "%f\n", floor(2.0f - elapsedMS));
+	  //SDL_Delay(floor(2.0f - elapsedMS));
+    if (frameDelay > tempsBoucle) {
+      SDL_Delay(frameDelay - tempsBoucle);
+    }
 
 
 	//Fin de la boucle

@@ -9,7 +9,7 @@ OBJ = $(SRC:.c=.o)
 
 all: $(EXEC)
 main: $(OBJ)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS) $(LDFLAGS) -g -Og
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LIBS) $(LDFLAGS) -g -Og -lm
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 clean:

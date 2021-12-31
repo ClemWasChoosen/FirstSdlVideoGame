@@ -8,6 +8,7 @@ struct zombie_s{
 	int posZombie;
 	int state;
 	char direction;
+	int display;
 };
 
 typedef struct zombie_s zombie_t;
