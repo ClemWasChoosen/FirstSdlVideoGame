@@ -242,6 +242,8 @@ void init_spritePlayer(character_t *mainCharactere){
 	mainCharactere->charac.posEcran.w = SIZE_PIXEL * 2 * ZOOM_SCREEN;
 
 	mainCharactere->state = 1;
+	//Une vie dans la variable correspond à une demie vie dans le jeu
+	mainCharactere->life = 6;
 
 }
 

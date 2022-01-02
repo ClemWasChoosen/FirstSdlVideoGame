@@ -10,6 +10,7 @@ struct zombie_s{
 	char direction;
 	int display;
 	int deltaTime;
+	Uint32 timeHit;
 };
 
 typedef struct zombie_s zombie_t;
@@ -35,5 +36,7 @@ void deplacerZombieSansEvenement(int x, int y, zombie_t* zombiesTab);
 int getRandomValueInMap(char* map, int sizeMax, int preOccurSlash, int *x, int *y);
 
 void randMoveZombies(zombie_t *zombie, char* allMap, int sizeMap, int preOccurSlash);
+
+void characterHit(int *life, zombie_t *zombie, int posJoueur, int preOccurSlash);
 
 #endif /* ifndef zombies_h */

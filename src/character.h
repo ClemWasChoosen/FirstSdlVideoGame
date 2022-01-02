@@ -9,6 +9,7 @@ struct character_s {
 	sprite_t charac;
 	int state;
 	char direction;
+	int life;
 };
 
 typedef struct character_s character_t;

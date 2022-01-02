@@ -94,6 +94,7 @@ void init_spriteZombie(zombiesAll_t *zombie, char* mapFromFile, int sizeMap, SDL
 		zombie->zombiesTab[i].state = 1;
 
 		zombie->zombiesTab[i].deltaTime = 0;
+		zombie->zombiesTab[i].timeHit = 0;
 	}
 }
 
@@ -137,6 +138,56 @@ void randMoveZombies(zombie_t *zombie, char* allMap, int sizeMap, int preOccurSl
 				zombie->state = 0;
 				break;
 		}
+	}
+}
+
+void characterHit(int *life, zombie_t *zombie, int posJoueur, int preOccurSlash){
+	if (zombie->display == 1) {
+		if (zombie->timeHit != 0) {
+			Uint32 diff = SDL_GetTicks() - zombie->timeHit;
+			//3000 ms == 3s
+			if (diff >= 500 && (zombie->posZombie - preOccurSlash == posJoueur || zombie->posZombie - 1 == posJoueur || zombie->posZombie + preOccurSlash == posJoueur || zombie->posZombie + 1 == posJoueur)) {
+				fprintf(stderr, "hit\n");
+				zombie->timeHit = 0;
+				life--;
+				return;
+			}
+		}
+
+		if (zombie->posZombie == posJoueur) {
+			zombie->timeHit = SDL_GetTicks();
+		}
+
+		switch (zombie->direction) {
+		case 'z':
+				if (zombie->posZombie - preOccurSlash == posJoueur) {
+					zombie->timeHit = SDL_GetTicks();
+				}
+
+			break;
+		case 'q':
+			if (zombie->posZombie - 1 == posJoueur) {
+				zombie->timeHit = SDL_GetTicks();
+			}
+			break;
+		case 's':
+			if (zombie->posZombie + preOccurSlash == posJoueur) {
+				zombie->timeHit = SDL_GetTicks();
+			}
+			break;
+		case 'd':
+			if (zombie->posZombie + 1 == posJoueur) {
+				zombie->timeHit = SDL_GetTicks();
+			}
+			break;
+		default:
+
+		break;
+		}
+	}
+
+	if ((SDL_GetTicks() - zombie->timeHit) >= 5000) {
+		zombie->timeHit = 0;
 	}
 }
 

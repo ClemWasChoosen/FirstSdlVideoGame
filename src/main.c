@@ -118,7 +118,7 @@ void mainLoop(SDL_Renderer* renderer){
 		//Récuperation de l'image permettant de faire la carte
 		map = loadImage("./resources/dungeon_tiles.bmp", renderer);
 		if (map == NULL) {
-        	fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
+      fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
 			SDL_DestroyTexture(map);
 			break;
 		}
@@ -159,6 +159,7 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 
       randMoveZombies(&allZombies.zombiesTab[i], carteJeu.allMap, carteJeu.sizeMap, preOccurSlash);
+      characterHit(&mainCharactere.life, &allZombies.zombiesTab[i], carteJeu.posJoueur, preOccurSlash);
 		}
 
 		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere, carteJeu.allSprite, carteJeu.sizeMap, &allZombies)) {
