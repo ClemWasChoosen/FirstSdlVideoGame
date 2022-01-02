@@ -53,6 +53,10 @@ void mainLoop(SDL_Renderer* renderer){
   const int frameDelay = 1000/FPS;
   int resRenderHeartLife = 0;
 
+
+  int waves = NBZOMBIES - 1;
+  int timerWaves = 0;
+
 	//A deplacer
 	//int statePlayer = 0;
 
@@ -160,7 +164,7 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 		}
 
-		for (int i = 0; i < NBZOMBIES; i++)
+		for (int i = 0; i < NBZOMBIES - waves; i++)
 		{
 			if (renderAnimeZombie(zombie, renderer, allZombies.zombiesTab[i].zmb.posEcran, allZombies.zombiesTab[i].zmb.posSprite, &allZombies.zombiesTab[i])){
 				fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
@@ -203,11 +207,33 @@ void mainLoop(SDL_Renderer* renderer){
 		deltaTime += tempsBoucle;
 		//deltaTimeZombies += tempsBoucle;
     //deltaTimeWait += tempsBoucle;
+    int endWave = 0;
 
-    for (int i = 0; i < NBZOMBIES; i++)
+    for (int i = 0; i < NBZOMBIES - waves; i++)
 		{
       allZombies.zombiesTab[i].deltaTime += tempsBoucle;
+
+      if (allZombies.zombiesTab[i].display == 1) {
+        endWave = 1;
+      }
 		}
+
+    if (endWave == 0) {
+      timerWaves = SDL_GetTicks();
+    }
+
+    if (timerWaves >= 3000) {
+      if (waves == 0) {
+        terminer = true;
+      }else{
+        waves--;
+        for (int i = 0; i < NBZOMBIES - waves; i++)
+    		{
+          allZombies.zombiesTab[i].display = 1;
+    		}
+        timerWaves = 0;
+      }
+    }
 
     //float elapsedMS = tempsBoucle / (float)SDL_GetPerformanceFrequency() * 1000.0f;
 
