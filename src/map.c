@@ -276,7 +276,7 @@ void fileInArray(FILE** fileToGet, carte_t* carteJeu){
 
 	//Initialisation de la taille de la carte en parcourant le fichier
 	//(retour à la ligne et espace non ajouté)
-	int c;
+	int c = 0;
 	while((c = fgetc(*fileToGet)) != EOF) {
 		if (c != ' ' && c != '\n') {
 			carteJeu->sizeMap += 1;
@@ -286,7 +286,7 @@ void fileInArray(FILE** fileToGet, carte_t* carteJeu){
 	//Curseur au début du fichier
 	fseek(*fileToGet, 0L, SEEK_SET);
 
-	carteJeu->allMap = malloc(carteJeu->sizeMap * sizeof(*carteJeu->allMap));
+	carteJeu->allMap = (char*)malloc(carteJeu->sizeMap * sizeof(char));
 
 	//Ajout des caractères du fichier dans allMap après allocation mémoire
 	int i = 0;
@@ -314,7 +314,7 @@ void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
 
 	//Récuperation du fichier
 	fileInArray(fileToGet, carteJeu);
-	carteJeu->allSprite = malloc(carteJeu->sizeMap * sizeof(sprite_t));
+	carteJeu->allSprite = (sprite_t*)malloc(carteJeu->sizeMap * sizeof(sprite_t));
 
 	//Initialisation de la position du joueur (la première case possible tout en haut à gauche)
 	carteJeu->posJoueur = 0;

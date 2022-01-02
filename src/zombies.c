@@ -14,6 +14,7 @@
 #include "zombies.h"
 #include "constants.h"
 #include "time.h"
+#include "map.h"
 
 
 int renderZombie(SDL_Texture *zombie, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeZombie){
@@ -94,8 +95,49 @@ void init_spriteZombie(zombiesAll_t *zombie, char* mapFromFile, int sizeMap, SDL
 
 		zombie->zombiesTab[i].deltaTime = 0;
 	}
+}
 
+void randMoveZombies(zombie_t *zombie, char* allMap, int sizeMap, int preOccurSlash){
+	if (zombie->state < 10) {
+		int random = rand() % 1000;
+		//fprintf(stderr, "%d\n", random);
+		switch (random) {
+			case 1:
+				if (preOccurSlash != 0 && allMap[zombie->posZombie - preOccurSlash] != '/' && allMap[zombie->posZombie - preOccurSlash] != '=' && zombie->posZombie - preOccurSlash >= 0 && allMap[zombie->posZombie - preOccurSlash] != '-') {
+					zombie->direction = 'z';
+					zombie->state = 10;
+					zombie->posZombie -= preOccurSlash;
+				}
+				break;
+			case 2:
+				if (allMap[zombie->posZombie - 1] != '-' && allMap[zombie->posZombie - 1] != '=' && allMap[zombie->posZombie - 1 ] != '/' && zombie->posZombie - 1 >= 0) {
+					zombie->direction = 'q';
+					zombie->state = 10;
+					zombie->posZombie--;
+				}
 
+				break;
+			case 3:
+				if (preOccurSlash != 0 && allMap[zombie->posZombie + preOccurSlash] != '=' && allMap[zombie->posZombie + preOccurSlash] != '-' && zombie->posZombie + preOccurSlash <= sizeMap && allMap[zombie->posZombie + preOccurSlash] != '/') {
+					zombie->direction = 's';
+					zombie->state = 10;
+					zombie->posZombie += preOccurSlash;
+				}
+
+				break;
+			case 4:
+				if (allMap[zombie->posZombie + 1] != '-' && allMap[zombie->posZombie + 1] != '/' && allMap[zombie->posZombie + 1] != '=' && zombie->posZombie + 1 <= sizeMap) {
+					zombie->direction = 'd';
+					zombie->state = 10;
+					zombie->posZombie++;
+				}
+
+				break;
+			default:
+				zombie->state = 0;
+				break;
+		}
+	}
 }
 
 int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizeZombie, zombie_t *zombie){
@@ -103,10 +145,74 @@ int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rec
 
 	//fprintf(stderr, "%d\n", zombie->state);
 
-	if (zombie->state < 10) {
-		sizeZombie.x += 64 * (zombie->state);
-		sizeZombie.y = SIZE_PIXEL * 1.7;
-		if (zombie->display == 1) {
+
+		if (zombie->state < 10) {
+			if (zombie->display == 1) {
+				sizeZombie.x += 64 * (zombie->state);
+				sizeZombie.y = SIZE_PIXEL * 1.7;
+					if (zombie->direction == 'd') {
+						if (renderZombie(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
+							return EXIT_FAILURE;
+					}else {
+						if (renderZombieFlipH(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
+							return EXIT_FAILURE;
+					}
+
+
+				if (zombie->deltaTime >= 150) {
+					//for (size_t i = 0; i < NBZOMBIES; i++) {
+						zombie->state += 1;
+						if (zombie->state >= 4) {
+							zombie->state = 0;
+						}
+					//}
+					zombie->deltaTime = 0;
+				}
+			}
+		}else if(zombie->state >= 10 && zombie->state < 20) {
+			if (zombie->display == 1) {
+				sizeZombie.x += 64 * (zombie->state%10);
+				sizeZombie.y = SIZE_PIXEL * 1.7 + 64;
+				if (zombie->direction == 'd') {
+					if (renderPlayer(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
+						return EXIT_FAILURE;
+				}else {
+					if (renderPlayerFlipH(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
+						return EXIT_FAILURE;
+
+				}
+
+				//Ajouter le déplacement des squelettes ici
+				if (zombie->deltaTime >= 1000/15) {
+					switch (zombie->direction) {
+					case 'z':
+						zombie->zmb.posEcran.y -= (SIZE_PIXEL * ZOOM_SCREEN)/4;
+						break;
+					case 'q':
+						zombie->zmb.posEcran.x -= (SIZE_PIXEL * ZOOM_SCREEN)/4;
+						break;
+					case 's':
+						zombie->zmb.posEcran.y += (SIZE_PIXEL * ZOOM_SCREEN)/4;
+						break;
+					case 'd':
+						zombie->zmb.posEcran.x += (SIZE_PIXEL * ZOOM_SCREEN)/4;
+						break;
+					default:
+
+					break;
+					}
+
+					zombie->state += 1;
+					if (zombie->state >= 14) {
+						zombie->state = 0;
+					}
+					zombie->deltaTime = 0;
+				}
+			}
+
+		}else if(zombie->state >= 70 && zombie->state <= 77 && zombie->display == -1){
+			sizeZombie.x += 64 * (zombie->state%10);
+			sizeZombie.y = SIZE_PIXEL * 1.7 + 6 * 64;
 			if (zombie->direction == 'd') {
 				if (renderZombie(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
 					return EXIT_FAILURE;
@@ -115,37 +221,16 @@ int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rec
 					return EXIT_FAILURE;
 
 			}
+
+			if (zombie->deltaTime >= 150) {
+					zombie->state += 1;
+					if (zombie->state >= 77) {
+						zombie->state = 0;
+						zombie->display = 0;
+					}
+				zombie->deltaTime = 0;
+			}
 		}
 
-		if (zombie->deltaTime >= 150) {
-			//for (size_t i = 0; i < NBZOMBIES; i++) {
-				zombie->state += 1;
-				if (zombie->state >= 4) {
-					zombie->state = 0;
-				}
-			//}
-			zombie->deltaTime = 0;
-		}
-	}else if(zombie->state >= 70 && zombie->state <= 77 && zombie->display == -1){
-		sizeZombie.x += 64 * (zombie->state%10);
-		sizeZombie.y = SIZE_PIXEL * 1.7 + 6 * 64;
-		if (zombie->direction == 'd') {
-			if (renderZombie(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
-				return EXIT_FAILURE;
-		}else {
-			if (renderZombieFlipH(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)
-				return EXIT_FAILURE;
-
-		}
-
-		if (zombie->deltaTime >= 150) {
-				zombie->state += 1;
-				if (zombie->state >= 77) {
-					zombie->state = 0;
-					zombie->display = 0;
-				}
-			zombie->deltaTime = 0;
-		}
-	}
 	return EXIT_SUCCESS;
 }

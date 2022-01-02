@@ -1,8 +1,9 @@
 #ifndef character_h
 #define character_h
 
-#include "sprite.h"
 #include "zombies.h"
+#include "sprite.h"
+
 
 struct character_s {
 	sprite_t charac;

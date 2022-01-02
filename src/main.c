@@ -157,6 +157,8 @@ void mainLoop(SDL_Renderer* renderer){
 				fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s\n", SDL_GetError());
 				break;
 			}
+
+      randMoveZombies(&allZombies.zombiesTab[i], carteJeu.allMap, carteJeu.sizeMap, preOccurSlash);
 		}
 
 		if (renderAnimePlayer(player, renderer, mainCharactere.charac.posEcran, mainCharactere.charac.posSprite, &deltaTime, &mainCharactere, carteJeu.allSprite, carteJeu.sizeMap, &allZombies)) {
@@ -225,7 +227,7 @@ int main(/*int argc, char *argv[]*/)
 	}
 
 	// Créer la fenêtre
-	if (SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &fenetre, &renderer)) {
+	if (SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, &fenetre, &renderer)) {
 		printf("Erreur de la creation d’une fenetre et du renderer: %s",SDL_GetError());
 		SDL_Quit();
 		return EXIT_FAILURE;

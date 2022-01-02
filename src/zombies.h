@@ -34,4 +34,6 @@ void deplacerZombieSansEvenement(int x, int y, zombie_t* zombiesTab);
 
 int getRandomValueInMap(char* map, int sizeMax, int preOccurSlash, int *x, int *y);
 
+void randMoveZombies(zombie_t *zombie, char* allMap, int sizeMap, int preOccurSlash);
+
 #endif /* ifndef zombies_h */
