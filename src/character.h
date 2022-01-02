@@ -35,4 +35,6 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 
 void attackOnZombies(SDL_Event evenements, zombiesAll_t *allZombies, int posJoueur);
 
+int renderHeartLife(character_t *mainCharactere, SDL_Texture *heart, SDL_Renderer *renderer);
+
 #endif /* ifndef character_h */

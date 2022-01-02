@@ -37,7 +37,8 @@ int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 void mainLoop(SDL_Renderer* renderer){
 	SDL_Event evenements; // Événements liés à la fenêtre
 	bool terminer = false;
-	SDL_Texture* map = NULL;
+  SDL_Texture* map = NULL;
+	SDL_Texture* heart = NULL;
 	SDL_Texture* player = NULL;
 	SDL_Texture* zombie = NULL;
 	FILE* fileMap = NULL;
@@ -50,6 +51,7 @@ void mainLoop(SDL_Renderer* renderer){
 	int deltaTime = 0;
 	//int deltaTimeZombies = 0;
   const int frameDelay = 1000/FPS;
+  int resRenderHeartLife = 0;
 
 	//A deplacer
 	//int statePlayer = 0;
@@ -132,7 +134,14 @@ void mainLoop(SDL_Renderer* renderer){
 
 		zombie = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
 		if (zombie == NULL) {
-			fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
+			fprintf(stderr, "Erreur recuperation de la feuille zombies: %s", SDL_GetError());
+			SDL_DestroyTexture(player);
+			break;
+		}
+
+    heart = loadImage("./resources/heart.bmp", renderer);
+		if (heart == NULL) {
+			fprintf(stderr, "Erreur recuperation de la feuille coeur de vie: %s", SDL_GetError());
 			SDL_DestroyTexture(player);
 			break;
 		}
@@ -167,15 +176,23 @@ void mainLoop(SDL_Renderer* renderer){
 			break;
 		}
 
+    resRenderHeartLife = renderHeartLife(&mainCharactere, heart, renderer);
+    if (resRenderHeartLife == EXIT_FAILURE) {
+      fprintf(stderr, "Erreur Impossible d afficher les coeurs : %s\n", SDL_GetError());
+			break;
+    }else if(resRenderHeartLife == 2){
+      terminer = true;
+    }
+
     attackOnZombies(evenements, &allZombies, carteJeu.posJoueur);
     //attackOnRight(evenements, &allZombies, carteJeu.posJoueur);
 
 		//######### Pour debug ###########
 		//Affiche un point au centre de l'écran
-		if (SDL_RenderDrawPoint(renderer, WINDOW_HEIGHT / 2, WINDOW_WIDTH / 2) < 0) {
+		/*if (SDL_RenderDrawPoint(renderer, WINDOW_HEIGHT / 2, WINDOW_WIDTH / 2) < 0) {
 			fprintf(stderr, "Erreur SDL_RenderDrawPoint : %s", SDL_GetError());
 			break;
-		}
+		}*/
 
 		SDL_RenderPresent(renderer);
 		//SDL_Delay(20);
@@ -204,6 +221,11 @@ void mainLoop(SDL_Renderer* renderer){
 
 	//Fin de la boucle
 	}
+
+  //Fin du jeu car le joueur a perdu, il ne lui reste plus de vie
+  if (resRenderHeartLife == 2) {
+    /* code */
+  }
 
 	//Libère la mémoire
 	SDL_DestroyTexture(map);

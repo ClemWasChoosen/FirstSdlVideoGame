@@ -147,11 +147,11 @@ void characterHit(int *life, zombie_t *zombie, int posJoueur, int preOccurSlash)
 			Uint32 diff = SDL_GetTicks() - zombie->timeHit;
 			//3000 ms == 3s
 			if (diff >= 500 && (zombie->posZombie - preOccurSlash == posJoueur || zombie->posZombie - 1 == posJoueur || zombie->posZombie + preOccurSlash == posJoueur || zombie->posZombie + 1 == posJoueur)) {
-				fprintf(stderr, "hit\n");
+				//fprintf(stderr, "hit\n");
 				zombie->timeHit = 0;
-				life--;
-				return;
+				*life = *life - 1;
 			}
+			return;
 		}
 
 		if (zombie->posZombie == posJoueur) {
@@ -183,10 +183,10 @@ void characterHit(int *life, zombie_t *zombie, int posJoueur, int preOccurSlash)
 		default:
 
 		break;
-		}
+	}
 	}
 
-	if ((SDL_GetTicks() - zombie->timeHit) >= 5000) {
+	if ((SDL_GetTicks() - zombie->timeHit) >= 2000) {
 		zombie->timeHit = 0;
 	}
 }

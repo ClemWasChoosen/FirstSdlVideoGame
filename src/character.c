@@ -220,6 +220,188 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 	return EXIT_SUCCESS;
 }
 
+int renderHeart(SDL_Texture *heart, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeHeart){
+	if (SDL_RenderCopy(renderer, heart, &sizeHeart, &posEcran)) {
+		fprintf(stderr, "Erreur SDL_RenderCopy : %s\n", SDL_GetError());
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
+}
+
+int renderHeartLife(character_t *mainCharactere, SDL_Texture *heart, SDL_Renderer *renderer){
+	SDL_Rect posEcran;
+	SDL_Rect fullHeart;
+	SDL_Rect emptyHeart;
+	SDL_Rect halfHeart;
+
+	fullHeart.x = 0;
+	fullHeart.y = 0;
+	fullHeart.h = 16;
+	fullHeart.w = 16;
+
+	//Non 16 mais 17 car un pixel entre chaque coeur
+	emptyHeart.x = 17 * 4;
+	emptyHeart.y = 0;
+	emptyHeart.h = 16;
+	emptyHeart.w = 18;
+
+	halfHeart.x = 17 * 2;
+	halfHeart.y = 0;
+	halfHeart.h = 16;
+	halfHeart.w = 18;
+
+	if (mainCharactere->life <= 0) {
+		return 2;
+	}
+	switch (mainCharactere->life) {
+		case 1:
+			posEcran.x = 5;
+			posEcran.y = 5;
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, halfHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, emptyHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, emptyHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+		break;
+		case 2:
+			posEcran.x = 5;
+			posEcran.y = 5;
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, emptyHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, emptyHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+		break;
+		case 3:
+			posEcran.x = 5;
+			posEcran.y = 5;
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, halfHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, emptyHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+		break;
+		case 4:
+			posEcran.x = 5;
+			posEcran.y = 5;
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, emptyHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+		break;
+		case 5:
+			posEcran.x = 5;
+			posEcran.y = 5;
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, halfHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+		break;
+		case 6:
+			posEcran.x = 5;
+			posEcran.y = 5;
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			posEcran.x += SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.h = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+			posEcran.w = SIZE_PIXEL * (ZOOM_SCREEN / 2);
+
+			if (renderHeart(heart, renderer, posEcran, fullHeart) == EXIT_FAILURE) {
+				return EXIT_FAILURE;
+			}
+			break;
+	}
+	return 0;
+}
+
 void init_spritePlayer(character_t *mainCharactere){
 
 	mainCharactere->direction = 'd';
@@ -227,7 +409,7 @@ void init_spritePlayer(character_t *mainCharactere){
 	mainCharactere->charac.posSprite.x = SIZE_PIXEL * 1.5;
 	mainCharactere->charac.posSprite.y = SIZE_PIXEL * 1.7;
 	mainCharactere->charac.posSprite.h = SIZE_PIXEL * 2 ;
-	mainCharactere->charac.posSprite.w = SIZE_PIXEL  * 2;
+	mainCharactere->charac.posSprite.w = SIZE_PIXEL * 2;
 
 	/*
 	mainCharactere->charac.posEcran.x = 0;
