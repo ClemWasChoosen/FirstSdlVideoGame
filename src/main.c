@@ -56,6 +56,7 @@ void mainLoop(SDL_Renderer* renderer){
 
   int waves = NBZOMBIES - 1;
   int timerWaves = 0;
+  int endWave = 1;
 
 	//A deplacer
 	//int statePlayer = 0;
@@ -207,26 +208,29 @@ void mainLoop(SDL_Renderer* renderer){
 		deltaTime += tempsBoucle;
 		//deltaTimeZombies += tempsBoucle;
     //deltaTimeWait += tempsBoucle;
-    int endWave = 0;
 
+    endWave = 1;
     for (int i = 0; i < NBZOMBIES - waves; i++)
 		{
       allZombies.zombiesTab[i].deltaTime += tempsBoucle;
 
+
       if (allZombies.zombiesTab[i].display == 1) {
-        endWave = 1;
+        endWave = 0;
       }
 		}
 
-    if (endWave == 0) {
-      timerWaves = SDL_GetTicks();
+    if (endWave == 1) {
+      timerWaves += tempsBoucle;
+      //fprintf(stderr, "%d\n", timerWaves);
     }
 
-    if (timerWaves >= 3000) {
-      if (waves == 0) {
+    if (timerWaves >= 1000) {
+      if (waves <= 0) {
         terminer = true;
       }else{
         waves--;
+        fprintf(stderr, "%d\n", NBZOMBIES - waves);
         for (int i = 0; i < NBZOMBIES - waves; i++)
     		{
           allZombies.zombiesTab[i].display = 1;
