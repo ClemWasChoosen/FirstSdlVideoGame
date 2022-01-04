@@ -146,44 +146,44 @@ void characterHit(int *life, zombie_t *zombie, int posJoueur, int preOccurSlash)
 		if (zombie->timeHit != 0) {
 			Uint32 diff = SDL_GetTicks() - zombie->timeHit;
 			//3000 ms == 3s
-			if (diff >= 500 && (zombie->posZombie - preOccurSlash == posJoueur || zombie->posZombie - 1 == posJoueur || zombie->posZombie + preOccurSlash == posJoueur || zombie->posZombie + 1 == posJoueur)) {
+			if (diff >= 1000 && (zombie->posZombie - preOccurSlash == posJoueur || zombie->posZombie - 1 == posJoueur || zombie->posZombie + preOccurSlash == posJoueur || zombie->posZombie + 1 == posJoueur)) {
 				//fprintf(stderr, "hit\n");
 				zombie->timeHit = 0;
 				*life = *life - 1;
 			}
-			return;
-		}
+		}else{
 
-		if (zombie->posZombie == posJoueur) {
-			zombie->timeHit = SDL_GetTicks();
-		}
+			if (zombie->posZombie == posJoueur) {
+				zombie->timeHit = SDL_GetTicks();
+			}
 
-		switch (zombie->direction) {
-		case 'z':
-				if (zombie->posZombie - preOccurSlash == posJoueur) {
+			switch (zombie->direction) {
+			case 'z':
+					if (zombie->posZombie - preOccurSlash == posJoueur) {
+						zombie->timeHit = SDL_GetTicks();
+					}
+
+				break;
+			case 'q':
+				if (zombie->posZombie - 1 == posJoueur) {
 					zombie->timeHit = SDL_GetTicks();
 				}
+				break;
+			case 's':
+				if (zombie->posZombie + preOccurSlash == posJoueur) {
+					zombie->timeHit = SDL_GetTicks();
+				}
+				break;
+			case 'd':
+				if (zombie->posZombie + 1 == posJoueur) {
+					zombie->timeHit = SDL_GetTicks();
+				}
+				break;
+			default:
 
 			break;
-		case 'q':
-			if (zombie->posZombie - 1 == posJoueur) {
-				zombie->timeHit = SDL_GetTicks();
 			}
-			break;
-		case 's':
-			if (zombie->posZombie + preOccurSlash == posJoueur) {
-				zombie->timeHit = SDL_GetTicks();
-			}
-			break;
-		case 'd':
-			if (zombie->posZombie + 1 == posJoueur) {
-				zombie->timeHit = SDL_GetTicks();
-			}
-			break;
-		default:
-
-		break;
-	}
+		}
 	}
 
 	if ((SDL_GetTicks() - zombie->timeHit) >= 2000) {

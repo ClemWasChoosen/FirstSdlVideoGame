@@ -222,7 +222,6 @@ void mainLoop(SDL_Renderer* renderer){
 
     if (endWave == 1) {
       timerWaves += tempsBoucle;
-      //fprintf(stderr, "%d\n", timerWaves);
     }
 
     if (timerWaves >= 1000) {
@@ -230,7 +229,7 @@ void mainLoop(SDL_Renderer* renderer){
         terminer = true;
       }else{
         waves--;
-        fprintf(stderr, "%d\n", NBZOMBIES - waves);
+		fprintf(stderr, "%d\n", NBZOMBIES - waves);
         for (int i = 0; i < NBZOMBIES - waves; i++)
     		{
           allZombies.zombiesTab[i].display = 1;

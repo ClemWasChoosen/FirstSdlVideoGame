@@ -5,7 +5,6 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
-#include <bits/types/FILE.h>
 #include <stdio.h>
 
 #include "character.h"
