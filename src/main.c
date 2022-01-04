@@ -36,13 +36,16 @@ int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 
 
 void mainLoop(SDL_Renderer* renderer){
-	SDL_Event evenements; // Événements liés à la fenêtre
+  SDL_Event evenements; // Événements liés à la fenêtre
+	SDL_Event eventsPause;
+  bool boolPause = false;
 	bool terminer = false;
   SDL_Texture* map = NULL;
 	SDL_Texture* heart = NULL;
 	SDL_Texture* player = NULL;
 	SDL_Texture* zombie = NULL;
 	SDL_Texture* gameOver = NULL;
+  SDL_Texture* menu = NULL;
 	FILE* fileMap = NULL;
 
 	sprite_t sizeGameOver;
@@ -91,6 +94,12 @@ void mainLoop(SDL_Renderer* renderer){
 			}
 	}
 
+  menu = loadImage("./resources/menu.bmp", renderer);
+  if (menu == NULL) {
+    fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
+    SDL_DestroyTexture(menu);
+  }
+
 	init_spriteZombie(&allZombies, carteJeu.allMap, carteJeu.sizeMap, carteJeu.allSprite[0].posEcran, preOccurSlash);
 
 
@@ -112,13 +121,25 @@ void mainLoop(SDL_Renderer* renderer){
 
   		start_time = SDL_GetTicks();
 
+    if (boolPause) {
+      do {
+        SDL_PollEvent( &eventsPause );
+        SDL_Delay(5);
+      } while(eventsPause.type != SDL_MOUSEBUTTONDOWN);
+      boolPause = false;
+    }
 
 		SDL_PollEvent( &evenements );
 		switch(evenements.type)
 		{
-			do
 			case SDL_QUIT:
 			terminer = true; break;
+      case SDL_MOUSEBUTTONDOWN:
+				if (evenements.button.button == SDL_BUTTON_LEFT){
+          boolPause = true;
+        }
+
+      break;
 			case SDL_KEYDOWN:
 			switch(evenements.key.keysym.sym)
 			{
@@ -129,13 +150,8 @@ void mainLoop(SDL_Renderer* renderer){
 						carteJeu.allSprite[i].posEcran.x += 200.0f * deltaTime;
 					}
 				break;*/
-				
+
 			}
-			case SDL_MOUSEBUTTONDOWN:
-				if (event.button.button == SDL_BUTTON_LEFT)
-                	SDL_W
-				
-            break;
 		}
 
 		//frameTime += deltaTime;
@@ -152,9 +168,9 @@ void mainLoop(SDL_Renderer* renderer){
 		}
 
 		gameOver = loadImage("./resources/game-over.bmp", renderer);
-		if (map == NULL) {
+		if (gameOver == NULL) {
       fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
-			SDL_DestroyTexture(map);
+			SDL_DestroyTexture(gameOver);
 			break;
 		}
 		//Récuperation de l'image permettant de faire la carte
@@ -168,14 +184,14 @@ void mainLoop(SDL_Renderer* renderer){
 		zombie = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
 		if (zombie == NULL) {
 			fprintf(stderr, "Erreur recuperation de la feuille zombies: %s", SDL_GetError());
-			SDL_DestroyTexture(player);
+			SDL_DestroyTexture(zombie);
 			break;
 		}
 
     heart = loadImage("./resources/heart.bmp", renderer);
 		if (heart == NULL) {
 			fprintf(stderr, "Erreur recuperation de la feuille coeur de vie: %s", SDL_GetError());
-			SDL_DestroyTexture(player);
+			SDL_DestroyTexture(heart);
 			break;
 		}
 
@@ -233,6 +249,10 @@ void mainLoop(SDL_Renderer* renderer){
 		}
 	}
 
+  if (boolPause) {
+    renderPause(menu, renderer);
+  }
+
 		SDL_RenderPresent(renderer);
 		//SDL_Delay(20);
 		//comptTour ++;
@@ -267,7 +287,7 @@ void mainLoop(SDL_Renderer* renderer){
         terminer = true;
       }else{
         waves--;
-		fprintf(stderr, "%d\n", NBZOMBIES - waves);
+		    //fprintf(stderr, "%d\n", NBZOMBIES - waves);
         for (int i = 0; i < NBZOMBIES - waves; i++)
     		{
           allZombies.zombiesTab[i].display = 1;
