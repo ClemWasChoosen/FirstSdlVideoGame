@@ -171,12 +171,15 @@ void deplacerCarte(carte_t *carteJeu, SDL_Event evenements, int preOccurSlash, c
 								if (mainCharactere->state < 10) {
 									carteJeu->posJoueur = carteJeu->posJoueur + preOccurSlash;
 									mainCharactere->state = 10;
-									mainCharacter
+									mainCharactere->direction = 's';
+								}
+							}
+							break;
+						case SDLK_z:
+							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '/' && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->posJoueur - preOccurSlash >= 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '-') {
 								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;
 								}*/
-						case SDLK_z:
-							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '/' && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->posJoueur - preOccurSlash >= 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '-') {
 								if (mainCharactere->state < 10) {
 									carteJeu->posJoueur = carteJeu->posJoueur - preOccurSlash;
 									mainCharactere->state = 10;
@@ -344,9 +347,6 @@ void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
 			getSpriteMap('6', &carteJeu->allSprite[i].posSprite);
 			setPosValue(i, x, y, carteJeu);
 			x = x + SIZE_PIXEL * ZOOM_SCREEN;
-								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
-									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;
-								}*/
 				break;
 
 			case '7':

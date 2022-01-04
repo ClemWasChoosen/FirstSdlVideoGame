@@ -183,7 +183,7 @@ void mainLoop(SDL_Renderer* renderer){
 
 	//Récupère les clicks du joueur
 	if (mainCharactere.state < 10) {
-		deplacerCarte((SIZE_PIXEL * ZOOM_SCREEN)/4, &carteJeu, evenements, preOccurSlash, &mainCharactere);
+		deplacerCarte(&carteJeu, evenements, preOccurSlash, &mainCharactere);
 	}
 
 	//Rendu de tous les sprites sur la carte
