@@ -10,6 +10,19 @@
 #include "sprite.h"
 #include "zombies.h"
 
+/**
+ * @brief Fichier contenant les fonctions du personnage principal 
+ */
+
+/**
+ * @brief Fonction permettant de faire le rendu du joueur
+ * 
+ * @param player texture du joueur à afficher
+ * @param renderer renderer sur lequel faire le rendu
+ * @param posEcran position sur l'écran
+ * @param sizePlayer position sur la texture
+ * @return int EXIT_FAILURE si erreur 
+ */
 int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizePlayer){
 	if (SDL_RenderCopy(renderer, player, &sizePlayer, &posEcran)) {
 		fprintf(stderr, "Erreur SDL_RenderCopy : %s\n", SDL_GetError());
@@ -18,6 +31,15 @@ int renderPlayer(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran,
 	return EXIT_SUCCESS;
 }
 
+/**
+ * @brief Fonction permettant de faire le rendu du joueur inversé sur l'axe vertical
+ * 
+ * @param player texture du joueur à afficher
+ * @param renderer renderer sur lequel faire le rendu
+ * @param posEcran position sur l'écran
+ * @param sizePlayer position sur la texture
+ * @return int EXIT_FAILURE si erreur 
+ */
 int renderPlayerFlipH(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizePlayer){
 	posEcran.x -= posEcran.w - 64;
 	if (SDL_RenderCopyEx(renderer, player, &sizePlayer, &posEcran, 0, NULL, SDL_FLIP_HORIZONTAL)) {
@@ -27,6 +49,20 @@ int renderPlayerFlipH(SDL_Texture *player, SDL_Renderer *renderer, SDL_Rect posE
 	return EXIT_SUCCESS;
 }
 
+/**
+ * @brief permet d'afficher le joueur sur le renderer avec les mouvements en fonction du state * et de la direction du joueur
+ * 
+ * @param player texture du joueur à afficher
+ * @param renderer renderer sur lequel faire le rendu
+ * @param posEcran position sur l'écran
+ * @param sizePlayer position sur la texture
+ * @param deltaTime timer sur le joueur pour les affichages
+ * @param mainCharactere enregistrements de l'appareil principal
+ * @param allSprite sprite de toutes les tiles de la map
+ * @param sizeMap taille de la carte 
+ * @param allZombies tous les sprites des zombies pour le déplacement de la carte
+ * @return int 
+ */
 int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizePlayer, int *deltaTime, character_t *mainCharactere, sprite_t *allSprite, int sizeMap, zombiesAll_t *allZombies){
 	//250ms = toutes les 1/4 secondes
 	if (mainCharactere->state < 10) {
@@ -89,7 +125,6 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 				mainCharactere->state = 0;
 			}
 			*deltaTime = 0;
-		//	fprintf(stderr, "Retour à 0 en 250ms\n");
 			}
 		}else if (mainCharactere->state >= 20) {
 			sizePlayer.x += 64 * (mainCharactere->state%10);
@@ -116,6 +151,15 @@ int renderAnimePlayer(SDL_Texture *player, SDL_Renderer * renderer, SDL_Rect pos
 	return EXIT_SUCCESS;
 }
 
+/**
+ * @brief Rendu pour les coeurs (vie) du joueurs
+ * 
+ * @param heart texture des coeurs
+ * @param renderer rendu sur lequel afficher les coeurs
+ * @param posEcran position sur le rendu
+ * @param sizeHeart position sur la texture
+ * @return int 
+ */
 int renderHeart(SDL_Texture *heart, SDL_Renderer *renderer, SDL_Rect posEcran, SDL_Rect sizeHeart){
 	if (SDL_RenderCopy(renderer, heart, &sizeHeart, &posEcran)) {
 		fprintf(stderr, "Erreur SDL_RenderCopy : %s\n", SDL_GetError());
@@ -124,6 +168,14 @@ int renderHeart(SDL_Texture *heart, SDL_Renderer *renderer, SDL_Rect posEcran, S
 	return EXIT_SUCCESS;
 }
 
+/**
+ * @brief Séléctionne chaque coeur et affiche en fonction de la vie du joueur
+ * 
+ * @param mainCharactere structure récupérer la vie du joueur
+ * @param heart texture du coeur
+ * @param renderer renderer sur lequel afficher les coeurs
+ * @return int EXIT_FAILURE si il y a une erreur 
+ */
 int renderHeartLife(character_t *mainCharactere, SDL_Texture *heart, SDL_Renderer *renderer){
 	SDL_Rect posEcran;
 	SDL_Rect fullHeart;
@@ -298,6 +350,11 @@ int renderHeartLife(character_t *mainCharactere, SDL_Texture *heart, SDL_Rendere
 	return 0;
 }
 
+/**
+ * @brief Initialisation du personnage principal
+ * 
+ * @param mainCharactere structure du personnage principal
+ */
 void init_spritePlayer(character_t *mainCharactere){
 
 	mainCharactere->direction = 'd';
@@ -306,13 +363,6 @@ void init_spritePlayer(character_t *mainCharactere){
 	mainCharactere->charac.posSprite.y = SIZE_PIXEL * 1.7;
 	mainCharactere->charac.posSprite.h = SIZE_PIXEL * 2 ;
 	mainCharactere->charac.posSprite.w = SIZE_PIXEL * 2;
-
-	/*
-	mainCharactere->charac.posEcran.x = 0;
-	mainCharactere->charac.posEcran.y = 0;
-	mainCharactere->charac.posEcran.h = SIZE_PIXEL * ZOOM_SCREEN * 2;
-	mainCharactere->charac.posEcran.w = SIZE_PIXEL * ZOOM_SCREEN * 2;
-*/
 
 	mainCharactere->charac.posEcran.x = WINDOW_WIDTH / 2 - (mainCharactere->charac.posSprite.w );
 	mainCharactere->charac.posEcran.y = WINDOW_HEIGHT / 2 - (mainCharactere->charac.posSprite.h * 2.5);
@@ -327,7 +377,13 @@ void init_spritePlayer(character_t *mainCharactere){
 
 
 
-
+/**
+ * @brief vérifie la position des enemies par rapport au personnage principal puis attaque
+ * 
+ * @param evenements touches enfoncées 
+ * @param allZombies tous les zombies pour les vérifications de position
+ * @param posJoueur position du joueur
+ */
 void attackOnZombies(SDL_Event evenements, zombiesAll_t *allZombies, int posJoueur){
 	switch(evenements.type)
 	{
