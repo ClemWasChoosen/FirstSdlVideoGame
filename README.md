@@ -8,21 +8,34 @@ Jeu réalisé par Emel Tatoglu et Clément Oberhauser dans le cadre de nos étud
  
  Pour installer le jeu : 
 ```
- git clone https://github.com/ClemWasChoosen/FirstSdlVideoGame.git
- cd FirstSdlVideoGame
- make
- ./main
+ $ git clone https://github.com/ClemWasChoosen/FirstSdlVideoGame.git
+ $ cd FirstSdlVideoGame
+ $ make
+ $ ./main
 ```
 
 Si le jeu s'arrête et que vous voulez rejouer :
 
 ```
  //Ligne suivante inutile si vous êtes déjà dans le dossier
- cd FirstSdlVideoGame
- make mrproper
- make
- ./main
+ $ cd FirstSdlVideoGame
+ $ make mrproper
+ $ make
+ $ ./main
  ```
 
 ## But du jeu
-  Le but du jeu est de finir toutes les vagues de squelette avec au moins une demie vie, dans les 
+  Le but du jeu est de finir toutes les vagues de squelette avec au moins une demie vie. Losrqu'on rencontre un ennemi, une case à coté ou sur l'ennemi, le joueur perd une demie vie.
+  
+## Comment jouer
+  Pour se déplacer : 
+    - z : aller vers le haut
+    - q : aller à gauche
+    - s : aller vers le bas
+    - d : aller vers la droite
+    
+ Pour attaquer : 
+    - e : pour attaquer à droite
+    - a : pour attaquer à gauche
+    
+
