@@ -1,3 +1,13 @@
+/*
+* =================================
+*	TODO
+*	Changer tous les noms en ENEMY
+*	- sauvegarde
+*   - gestion d'erreurs fichiers entrée
+*   - souris
+* =================================
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
@@ -24,7 +34,7 @@ int renderZombieFlipH(SDL_Texture *zombie, SDL_Renderer *renderer, SDL_Rect posE
 	return EXIT_SUCCESS;
 }
 
-void deplacerZombieSansEvenement(int x, int y, zombie_t* zomabiesTab){
+void deplacerZombieSansEvenement(int x, int y, zombie_t* zombiesTab){
 		int i = 0;
 		for (i = 0; i < NBZOMBIES; i++) {
 			zombiesTab[i].zmb.posEcran.x += x;
@@ -37,6 +47,7 @@ int getRandomValueInMap(char* map, int sizeMax, int preOccurSlash, int *x, int *
 	if (map[random] != '-' &&  map[random] != '/' && map[random] != '=')
 	{
 		int count = 0;
+		//fprintf(stderr, "map : %s\n", map);
 		for (int i = 0; i < random; i++)
 		{
 			if (map[i] == '/')
@@ -65,6 +76,7 @@ void init_spriteZombie(zombiesAll_t *zombie, char* mapFromFile, int sizeMap, SDL
 	{
 		zombie->zombiesTab[i].direction ='d';
 		zombie->zombiesTab[i].posZombie = getRandomValueInMap(zombie->allMapFile, sizeMap, preOccurSlash, &xToadd, &yToadd);
+		//fprintf(stderr, "random = %d, x = %d, y = %d\n", zombie->zombiesTab[0].posZombie, xToadd, yToadd);
 
 		zombie->zombiesTab[i].zmb.posSprite.x = SIZE_PIXEL * 1.5;
 		zombie->zombiesTab[i].zmb.posSprite.y = SIZE_PIXEL * 1.7;
@@ -72,7 +84,9 @@ void init_spriteZombie(zombiesAll_t *zombie, char* mapFromFile, int sizeMap, SDL
 		zombie->zombiesTab[i].zmb.posSprite.w = SIZE_PIXEL * 2;
 
 		zombie->zombiesTab[i].zmb.posEcran.x = posEcranMapHG.x + SIZE_PIXEL * ZOOM_SCREEN * xToadd;
+		//WINDOW_WIDTH / 3 - (zombie->zombiesTab[1].zmb.posSprite.w );
 		zombie->zombiesTab[i].zmb.posEcran.y = (posEcranMapHG.y - (zombie->zombiesTab[i].zmb.posSprite.h * 1.5)) + SIZE_PIXEL * ZOOM_SCREEN * yToadd;
+		//WINDOW_HEIGHT / 3 - (zombie->zombiesTab[1].zmb.posSprite.h * 2.5);
 		zombie->zombiesTab[i].zmb.posEcran.h = SIZE_PIXEL * ZOOM_SCREEN * 2;
 		zombie->zombiesTab[i].zmb.posEcran.w = SIZE_PIXEL * ZOOM_SCREEN * 2;
 
@@ -87,6 +101,7 @@ void init_spriteZombie(zombiesAll_t *zombie, char* mapFromFile, int sizeMap, SDL
 void randMoveZombies(zombie_t *zombie, char* allMap, int sizeMap, int preOccurSlash){
 	if (zombie->state < 10) {
 		int random = rand() % 1000;
+		//fprintf(stderr, "%d\n", random);
 		switch (random) {
 			case 1:
 				if (preOccurSlash != 0 && allMap[zombie->posZombie - preOccurSlash] != '/' && allMap[zombie->posZombie - preOccurSlash] != '=' && zombie->posZombie - preOccurSlash >= 0 && allMap[zombie->posZombie - preOccurSlash] != '-') {
@@ -132,6 +147,7 @@ void characterHit(int *life, zombie_t *zombie, int posJoueur, int preOccurSlash)
 			Uint32 diff = SDL_GetTicks() - zombie->timeHit;
 			//1000 ms == 1s
 			if (diff >= 1000 && (zombie->posZombie - preOccurSlash == posJoueur || zombie->posZombie - 1 == posJoueur || zombie->posZombie + preOccurSlash == posJoueur || zombie->posZombie + 1 == posJoueur)) {
+				//fprintf(stderr, "hit\n");
 				zombie->timeHit = 0;
 				*life = *life - 1;
 			}
@@ -177,6 +193,10 @@ void characterHit(int *life, zombie_t *zombie, int posJoueur, int preOccurSlash)
 
 int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rect posEcran, SDL_Rect sizeZombie, zombie_t *zombie){
 	//250ms = toutes les 1/4 secondes
+
+	//fprintf(stderr, "%d\n", zombie->state);
+
+
 		if (zombie->state < 10) {
 			if (zombie->display == 1) {
 				sizeZombie.x += 64 * (zombie->state);
@@ -191,10 +211,12 @@ int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rec
 
 
 				if (zombie->deltaTime >= 150) {
+					//for (size_t i = 0; i < NBZOMBIES; i++) {
 						zombie->state += 1;
 						if (zombie->state >= 4) {
 							zombie->state = 0;
 						}
+					//}
 					zombie->deltaTime = 0;
 				}
 			}
@@ -238,6 +260,9 @@ int renderAnimeZombie(SDL_Texture *zombieTextu, SDL_Renderer * renderer, SDL_Rec
 					zombie->deltaTime = 0;
 				}
 			}
+
+		}else if(zombie->state >= 70 && zombie->state <= 77 && zombie->display == -1){
+			sizeZombie.x += 64 * (zombie->state%10);
 			sizeZombie.y = SIZE_PIXEL * 1.7 + 6 * 64;
 			if (zombie->direction == 'd') {
 				if (renderZombie(zombieTextu, renderer, posEcran, sizeZombie) == EXIT_FAILURE)

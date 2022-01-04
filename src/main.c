@@ -305,7 +305,7 @@ int main(/*int argc, char *argv[]*/)
 		return EXIT_FAILURE;
 	}
 
-	SDL_SetWindowTitle(fenetre, "Samourai vs Zombies");
+	SDL_SetWindowTitle(fenetre, "Chevalier vs squelettes");
 
 	//Boucle du jeu créée dans une fonction
 	mainLoop(renderer);

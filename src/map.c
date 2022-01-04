@@ -10,26 +10,6 @@
 #include "map.h"
 
 
-
-/*int loadImage(const char path[], SDL_Renderer *renderer, SDL_Texture *texture){
-    SDL_Surface *tmp = NULL;
-    tmp = SDL_LoadBMP(path);
-    if(NULL == tmp)
-    {
-        fprintf(stderr, "Erreur SDL_LoadBMP : %s", SDL_GetError());
-		return EXIT_FAILURE;
-    }
-    texture = SDL_CreateTextureFromSurface(renderer, tmp);
-    SDL_FreeSurface(tmp);
-    if(NULL == texture)
-    {
-        fprintf(stderr, "Erreur SDL_CreateTextureFromSurface : %s", SDL_GetError());
-        return EXIT_FAILURE;
-    }
-    return EXIT_SUCCESS;
-}*/
-
-
 void getSpriteMap(char value, SDL_Rect *sizeMap){
 	switch (value) {
 
@@ -131,7 +111,7 @@ void getSpriteMap(char value, SDL_Rect *sizeMap){
 
 			break;
 
-		//Partie gauche du pont
+		//Partie droite du pont
 		case 'o':
 		sizeMap->x = SIZE_PIXEL * 8 + 16;
 		sizeMap->y = SIZE_PIXEL * 8 + 4;
@@ -161,16 +141,13 @@ void getSpriteMap(char value, SDL_Rect *sizeMap){
 }
 
 
-void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenements, int preOccurSlash, character_t *mainCharactere){
+void deplacerCarte(carte_t *carteJeu, SDL_Event evenements, int preOccurSlash, character_t *mainCharactere){
 	if (carteJeu != NULL) {
 		switch (evenements.type) {
 			case SDL_KEYDOWN:
 				switch (evenements.key.keysym.sym) {
 						case SDLK_d:
 							if (carteJeu->allMap[carteJeu->posJoueur + 1] != '-' && carteJeu->allMap[carteJeu->posJoueur + 1] != '/' && carteJeu->allMap[carteJeu->posJoueur + 1] != '=' && carteJeu->posJoueur + 1 <= carteJeu->sizeMap) {
-								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
-									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x - deplacement;
-								}*/
 								if (mainCharactere->state < 10) {
 									carteJeu->posJoueur = carteJeu->posJoueur + 1;
 									mainCharactere->state = 10;
@@ -180,9 +157,6 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 							break;
 						case SDLK_q:
 							if (carteJeu->allMap[carteJeu->posJoueur - 1] != '-' && carteJeu->allMap[carteJeu->posJoueur - 1] != '=' && carteJeu->allMap[carteJeu->posJoueur - 1 ] != '/' && carteJeu->posJoueur - 1 >= 0) {
-								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
-									carteJeu->allSprite[i].posEcran.x = carteJeu->allSprite[i].posEcran.x + deplacement;
-								}*/
 								if (mainCharactere->state < 10) {
 									carteJeu->posJoueur = carteJeu->posJoueur - 1;
 									mainCharactere->state = 10;
@@ -194,21 +168,15 @@ void deplacerCarte(const int deplacement, carte_t *carteJeu, SDL_Event evenement
 
 						case SDLK_s:
 							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '=' && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '-' && carteJeu->posJoueur + preOccurSlash <= carteJeu->sizeMap && carteJeu->allMap[carteJeu->posJoueur + preOccurSlash] != '/') {
-								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
-									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y - deplacement;
-								}*/
 								if (mainCharactere->state < 10) {
 									carteJeu->posJoueur = carteJeu->posJoueur + preOccurSlash;
 									mainCharactere->state = 10;
-									mainCharactere->direction = 's';
-								}
-							}
-							break;
-						case SDLK_z:
-							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '/' && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->posJoueur - preOccurSlash >= 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '-') {
+									mainCharacter
 								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
 									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;
 								}*/
+						case SDLK_z:
+							if (preOccurSlash != 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '/' && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '=' && carteJeu->posJoueur - preOccurSlash >= 0 && carteJeu->allMap[carteJeu->posJoueur - preOccurSlash] != '-') {
 								if (mainCharactere->state < 10) {
 									carteJeu->posJoueur = carteJeu->posJoueur - preOccurSlash;
 									mainCharactere->state = 10;
@@ -376,6 +344,9 @@ void init_spriteMap(carte_t *carteJeu, FILE** fileToGet){
 			getSpriteMap('6', &carteJeu->allSprite[i].posSprite);
 			setPosValue(i, x, y, carteJeu);
 			x = x + SIZE_PIXEL * ZOOM_SCREEN;
+								/*for (int i = 0; i < carteJeu->sizeMap; i++) {
+									carteJeu->allSprite[i].posEcran.y = carteJeu->allSprite[i].posEcran.y + deplacement;
+								}*/
 				break;
 
 			case '7':
