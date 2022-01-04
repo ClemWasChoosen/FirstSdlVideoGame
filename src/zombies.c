@@ -145,7 +145,7 @@ void characterHit(int *life, zombie_t *zombie, int posJoueur, int preOccurSlash)
 	if (zombie->display == 1) {
 		if (zombie->timeHit != 0) {
 			Uint32 diff = SDL_GetTicks() - zombie->timeHit;
-			//3000 ms == 3s
+			//1000 ms == 1s
 			if (diff >= 1000 && (zombie->posZombie - preOccurSlash == posJoueur || zombie->posZombie - 1 == posJoueur || zombie->posZombie + preOccurSlash == posJoueur || zombie->posZombie + 1 == posJoueur)) {
 				//fprintf(stderr, "hit\n");
 				zombie->timeHit = 0;

@@ -17,6 +17,7 @@
 #include "constants.h"
 #include "zombies.h"
 #include "time.h"
+#include "menu.h"
 
 int init(SDL_Window **window, SDL_Renderer **renderer, int w, int h)
 {
@@ -41,7 +42,20 @@ void mainLoop(SDL_Renderer* renderer){
 	SDL_Texture* heart = NULL;
 	SDL_Texture* player = NULL;
 	SDL_Texture* zombie = NULL;
+	SDL_Texture* gameOver = NULL;
 	FILE* fileMap = NULL;
+
+	sprite_t sizeGameOver;
+	sizeGameOver.posSprite.x = 0;
+	sizeGameOver.posSprite.y = 0;
+	sizeGameOver.posSprite.h = 800;
+	sizeGameOver.posSprite.w = 800;
+
+	sizeGameOver.posEcran.x = 0;
+	sizeGameOver.posEcran.y = 0;
+	sizeGameOver.posEcran.h = 800;
+	sizeGameOver.posEcran.w = 800;
+
 	//int comptTour = 0;
 
 	//float frameTime = 0;
@@ -102,6 +116,7 @@ void mainLoop(SDL_Renderer* renderer){
 		SDL_PollEvent( &evenements );
 		switch(evenements.type)
 		{
+			do
 			case SDL_QUIT:
 			terminer = true; break;
 			case SDL_KEYDOWN:
@@ -114,7 +129,13 @@ void mainLoop(SDL_Renderer* renderer){
 						carteJeu.allSprite[i].posEcran.x += 200.0f * deltaTime;
 					}
 				break;*/
+				
 			}
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.button.button == SDL_BUTTON_LEFT)
+                	SDL_W
+				
+            break;
 		}
 
 		//frameTime += deltaTime;
@@ -124,6 +145,13 @@ void mainLoop(SDL_Renderer* renderer){
 
 		//Récuperation de l'image permettant de faire la carte
 		map = loadImage("./resources/dungeon_tiles.bmp", renderer);
+		if (map == NULL) {
+      fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
+			SDL_DestroyTexture(map);
+			break;
+		}
+
+		gameOver = loadImage("./resources/game-over.bmp", renderer);
 		if (map == NULL) {
       fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
 			SDL_DestroyTexture(map);
@@ -198,10 +226,20 @@ void mainLoop(SDL_Renderer* renderer){
 			fprintf(stderr, "Erreur SDL_RenderDrawPoint : %s", SDL_GetError());
 			break;
 		}*/
+		//Fin du jeu car le joueur a perdu, il ne lui reste plus de vie
+	if (resRenderHeartLife == 2) {
+		if(renderGameOver(gameOver, renderer, sizeGameOver.posEcran, sizeGameOver.posSprite) == EXIT_FAILURE){
+			fprintf(stderr, "Erreur SDL_RenderGameOver : %s", SDL_GetError());
+		}
+	}
 
 		SDL_RenderPresent(renderer);
 		//SDL_Delay(20);
 		//comptTour ++;
+
+		if(resRenderHeartLife == 2){
+			SDL_Delay(5000);
+		}
 
   	tempsBoucle = SDL_GetTicks()-start_time;
 
@@ -224,7 +262,7 @@ void mainLoop(SDL_Renderer* renderer){
       timerWaves += tempsBoucle;
     }
 
-    if (timerWaves >= 1000) {
+    if (timerWaves >= 5000) {
       if (waves <= 0) {
         terminer = true;
       }else{
@@ -250,11 +288,6 @@ void mainLoop(SDL_Renderer* renderer){
 
 	//Fin de la boucle
 	}
-
-  //Fin du jeu car le joueur a perdu, il ne lui reste plus de vie
-  if (resRenderHeartLife == 2) {
-    /* code */
-  }
 
 	//Libère la mémoire
 	SDL_DestroyTexture(map);
