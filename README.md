@@ -41,10 +41,10 @@ Si le jeu s'arrête et que vous voulez rejouer :
    &ensp; - e : pour attaquer à droite  
    &ensp; - a : pour attaquer à gauche  
    
-   Pour quitter le jeu : 
-  &ensp; - cliquer sur la croix
-  &ensp; - finir le jeu en gagnant ou perdant
+   Pour quitter le jeu :  
+  &ensp; - cliquer sur la croix  
+  &ensp; - gagner ou perdre  
   
-  Pour mettre le jeu en pause:
-  &ensp; - cliquer sur l'écran (click gauche)
+  Pour mettre le jeu en pause:  
+  &ensp; - cliquer sur l'écran (click gauche, pour relancer cliquer)
 
