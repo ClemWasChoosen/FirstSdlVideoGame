@@ -1,5 +1,6 @@
 # Chevalier vs squelettes
-&ensp; Jeu réalisé par Emel Tatoglu et Clément Oberhauser dans le cadre de nos études Licence 2 Informatique 
+&ensp; Jeu réalisé par Emel Tatoglu et Clément Oberhauser dans le cadre de nos études Licence 2 Informatique  
+Lien GitHub : (https://github.com/ClemWasChoosen/FirstSdlVideoGame)
 
 ## Téléchargement et lancement
   !!!!! Pour que le jeu puisse se lancer il faut impérativement avoir la bibliothèque SDL sur son pc !!!!!
