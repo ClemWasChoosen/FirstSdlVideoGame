@@ -81,6 +81,42 @@ void mainLoop(SDL_Renderer* renderer){
 	init_spritePlayer(&mainCharactere);
 	placerCarteCentre(&carteJeu);
 
+	//Récuperation de l'image permettant de faire la carte
+	map = loadImage("./resources/dungeon_tiles.bmp", renderer);
+	if (map == NULL) {
+	fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
+		SDL_DestroyTexture(map);
+		break;
+	}
+
+	gameOver = loadImage("./resources/game-over.bmp", renderer);
+	if (gameOver == NULL) {
+	fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
+		SDL_DestroyTexture(gameOver);
+		break;
+	}
+	//Récuperation de l'image permettant de faire la carte
+	player = loadImage("./resources/16x16-knight-2-v3.bmp", renderer);
+	if (player == NULL) {
+		fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
+		SDL_DestroyTexture(player);
+		break;
+	}
+
+	zombie = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
+	if (zombie == NULL) {
+		fprintf(stderr, "Erreur recuperation de la feuille zombies: %s", SDL_GetError());
+		SDL_DestroyTexture(zombie);
+		break;
+	}
+
+		heart = loadImage("./resources/heart.bmp", renderer);
+	if (heart == NULL) {
+		fprintf(stderr, "Erreur recuperation de la feuille coeur de vie: %s", SDL_GetError());
+		SDL_DestroyTexture(heart);
+		break;
+	}
+
 	//Utilisé pour aller de haut en bas dans le tableau
 	int preOccurSlash = 0;
 	for (int r = 0; r < carteJeu.sizeMap; r++) {
@@ -144,42 +180,6 @@ void mainLoop(SDL_Renderer* renderer){
 
 	SDL_RenderClear(renderer);
 
-
-	//Récuperation de l'image permettant de faire la carte
-	map = loadImage("./resources/dungeon_tiles.bmp", renderer);
-	if (map == NULL) {
-	fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
-		SDL_DestroyTexture(map);
-		break;
-	}
-
-	gameOver = loadImage("./resources/game-over.bmp", renderer);
-	if (gameOver == NULL) {
-	fprintf(stderr, "Erreur recuperation de la map: %s", SDL_GetError());
-		SDL_DestroyTexture(gameOver);
-		break;
-	}
-	//Récuperation de l'image permettant de faire la carte
-	player = loadImage("./resources/16x16-knight-2-v3.bmp", renderer);
-	if (player == NULL) {
-		fprintf(stderr, "Erreur recuperation de la feuille Joueur principal: %s", SDL_GetError());
-		SDL_DestroyTexture(player);
-		break;
-	}
-
-	zombie = loadImage("./resources/16x16-knight-1-v3.bmp", renderer);
-	if (zombie == NULL) {
-		fprintf(stderr, "Erreur recuperation de la feuille zombies: %s", SDL_GetError());
-		SDL_DestroyTexture(zombie);
-		break;
-	}
-
-		heart = loadImage("./resources/heart.bmp", renderer);
-	if (heart == NULL) {
-		fprintf(stderr, "Erreur recuperation de la feuille coeur de vie: %s", SDL_GetError());
-		SDL_DestroyTexture(heart);
-		break;
-	}
 
 	//Récupère les clicks du joueur
 	if (mainCharactere.state < 10) {
